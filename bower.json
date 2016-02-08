@@ -1,0 +1,23 @@
+{
+  "name": "remark",
+  "authors": [
+    "Gargouille <792459576@qq.com>"
+  ],
+  "description": "block",
+  "main": "app.js",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "index",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.6",
+    "jquery": "~2.2.0"
+  }
+}

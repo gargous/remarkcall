@@ -1,0 +1,69 @@
+.remark{
+    transition: all 0.5s;
+    -moz-transition: all 0.5s; /* Firefox 4 */
+    -webkit-transition: all 0.5s; /* Safari ºÍ Chrome */
+    -o-transition: all 0.5s; /* Opera */
+}
+.remark:hover{
+    color:white;
+    background: orangered;
+    border: 0.1em solid orangered;
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+    border-radius: 0.8em;
+}
+.remark:after{
+    float:right;
+    background: orange;
+    border: 0.1em solid orange;
+    border-radius: 20%;
+    content:attr(remark-count);
+    text-align: center;
+    line-height: 1.3em;
+    margin-left: 0.5em;
+    width: 1.55em;
+    height: 1.5em;
+    color: white;
+    font-size: 2pt;
+    transition: all 0.5s;
+    -moz-transition: all 0.5s; /* Firefox 4 */
+    -webkit-transition: all 0.5s; /* Safari ºÍ Chrome */
+    -o-transition: all 0.5s; /* Opera */
+}
+.remark:hover:after{
+    background: orangered;
+    border: 0.1em solid orangered;
+    border-radius: 50%;
+}
+.remark:active:after{
+    background: orange;
+    border: 0.1em solid orange;
+    border-radius: 50%;
+}
+
+.remarkReviewer{
+    font-size: large;
+    float: left;
+    margin: 6pt;
+    line-height:10pt;
+}
+.remarkContent{
+    float: left;
+    margin: 6pt;
+    line-height:10pt;
+}
+.remarkItem{
+    overflow:hidden;
+}
+
+.visitor{
+    background: dodgerblue;
+    color: white;
+    float: right;
+    width: 100%;
+    height: 100%;
+    width: inherit;
+    border: 0.1em solid dodgerblue;
+    border-radius: 50%;
+    padding: 0.5em;
+}

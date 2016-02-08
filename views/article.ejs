@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css">
+    <link href="./bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="./summernote/dist/summernote.css" rel="stylesheet" type="text/css">
+    <link href="./prism/prism.css" rel="stylesheet" type="text/css">
+    <link href="./css/article.css" rel="stylesheet" type="text/css">
+
+
+    <script type="text/javascript" src="./jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="./bootstrap/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="./summernote/dist/summernote.js"></script>
+    <script type="text/javascript" src="./socket.io/socket.io.js" ></script>
+    <script type="text/javascript" src="./prism/prism.js" ></script>
+    <script type="text/javascript" src="./summernote/summernote-ext-highlight.js"></script>
+    <script type="text/javascript" src="./summernote/summernote-ext-roundtext.js"></script>
+    <script type="text/javascript" src="./js/diffDOM.js"></script>
+    <script type="text/javascript" src="./js/diffString.js"></script>
+    <script type="text/javascript" src="./js/remark.js"></script>
+    <script type="text/javascript" src="./js/article.js"></script>
+    <title></title>
+    <script>
+        $(function () { $("[data-toggle='tooltip']").tooltip(); });
+    </script>
+</head>
+<body>
+<nav class="navbar navbar-default ">
+    <div class="container ">
+        <div class="header clearfix">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li class="navbar-text navbar-right">
+                        online : <span id="visitor"><%= visitor %></span>
+                    </li>
+                    <li class="navbar-text navbar-right">
+                        visitor : <span id="visitor"><%= visitor %></span>
+                    </li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">RemarkCall</h3>
+            <ol class="breadcrumb" style="background: transparent;padding-left: 0em">
+                <li><a href="/index">Home</a></li>
+                <li class="active">文章<%- index+1 %></li>
+            </ol>
+        </div>
+
+        <div id="index" style="display: none"><%= index %></div>
+        <div id="isAuthor" style="display: none"><%= isAuthor %></div>
+    </div>
+</nav>
+<div class="container">
+
+    <div id="summernote" style="border: none">
+        <%- content %>
+    </div>
+    <div id="editWrapper"  class="panel-body">
+        <div contenteditable="true">123</div>
+        <div contenteditable="true">456</div>
+        <div contenteditable="true">789</div>
+    </div>
+</div>
+<div id="remarkFloat" class="modal fade" role="dialog">
+    <div class="modal-dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a class="close" data-dismiss="modal">×</a>
+                <h3>This is a Modal Heading</h3>
+            </div>
+            <ul class="modal-body list-group">
+            </ul>
+            <div id="remarkNote" style="float: left;"></div>
+            <div class="modal-footer">
+                <a href="#" id="remarkSubmit" class="btn btn-success">Remark!</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

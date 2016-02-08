@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="bootstrap/dist/js/bootstrap.js"></script>
+    <link href="bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript">
+
+    </script>
+</head>
+<body>
+
+<nav class="navbar navbar-default ">
+    <div class="container ">
+        <div class="header clearfix">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li class="navbar-text navbar-right">
+                        online : <span id="visitor"><%= user %></span>
+                    </li>
+                    <li class="navbar-text navbar-right">
+                        visitor : <span id="visitor"><%= user %></span>
+                    </li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">RemarkCall</h3>
+            <ol class="breadcrumb" style="background: transparent;padding-left: 0em">
+                <li class="active">Home</li>
+            </ol>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <h1 style="font-family: 'Microsoft YaHei'">首页</h1>
+    <div class="list-group">
+        <% articles.foreach(function(article){ %>
+        <a class="list-group-item" href="article?index=<%= article.index %>">
+            <%= article.title %>
+        </a>
+        <% }) %>
+    </div>
+</div>
+</body>
+</html>
