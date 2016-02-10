@@ -8,6 +8,7 @@
     <link href="./summernote/dist/summernote.css" rel="stylesheet" type="text/css">
     <link href="./prism/prism.css" rel="stylesheet" type="text/css">
     <link href="./css/article.css" rel="stylesheet" type="text/css">
+    <link href="./css/awesome-bootstrap-checkbox.css" rel="stylesheet" type="text/css" />
 
 
     <script type="text/javascript" src="./jquery/dist/jquery.js"></script>
@@ -16,7 +17,7 @@
     <script type="text/javascript" src="./socket.io/socket.io.js" ></script>
     <script type="text/javascript" src="./prism/prism.js" ></script>
     <script type="text/javascript" src="./summernote/summernote-ext-highlight.js"></script>
-    <script type="text/javascript" src="./summernote/summernote-ext-roundtext.js"></script>
+    <script type="text/javascript" src="./js/summernote-ext-roundtext.js"></script>
     <script type="text/javascript" src="./js/diffDOM.js"></script>
     <script type="text/javascript" src="./js/diffString.js"></script>
     <script type="text/javascript" src="./js/remark.js"></script>
@@ -27,41 +28,75 @@
     </script>
 </head>
 <body>
-<nav class="navbar navbar-default ">
+<nav class="navbar navbar-default">
     <div class="container ">
         <div class="header clearfix">
             <nav>
                 <ul class="nav nav-pills pull-right">
                     <li class="navbar-text navbar-right">
-                        online : <span id="visitor"><%= visitor %></span>
+                        online : <span id="online">0</span>
                     </li>
                     <li class="navbar-text navbar-right">
-                        visitor : <span id="visitor"><%= visitor %></span>
+                        visitor : <span id="visitor"><%= article.visitor %></span>
                     </li>
                 </ul>
             </nav>
             <h3 class="text-muted">RemarkCall</h3>
+
             <ol class="breadcrumb" style="background: transparent;padding-left: 0em">
                 <li><a href="/index">Home</a></li>
-                <li class="active">文章<%- index+1 %></li>
+                <li class="active">
+                    <%- article.title %>
+                </li>
+                <% if(article.isAuthor){ %>
+                <span class="navbar-right text-muted checkbox  checkbox-inline checkbox-info">
+                    <input id="editCheckbox" type="checkbox">
+                    <label id="editLabel">
+                        <% if(article.editable){%>
+                        允许编辑
+                        <% }else{ %>
+                        不可编辑
+                        <% } %>
+                    </label>
+                </span>
+                <% }else{%>
+                <span id="editLabel" class="navbar-right text-muted ">
+                    <% if(article.editable){%>
+                    允许编辑
+                    <% }else{ %>
+                    不可编辑
+                    <% } %>
+                </span>
+                <% } %>
             </ol>
         </div>
-
-        <div id="index" style="display: none"><%= index %></div>
-        <div id="isAuthor" style="display: none"><%= isAuthor %></div>
+        <div id="articleInfo" style="display: none">
+            <%- JSON.stringify(articleInfo) %>
+        </div>
     </div>
 </nav>
 <div class="container">
-
-    <div id="summernote" style="border: none">
-        <%- content %>
-    </div>
-    <div id="editWrapper"  class="panel-body">
-        <div contenteditable="true">123</div>
-        <div contenteditable="true">456</div>
-        <div contenteditable="true">789</div>
+    <div id="summernote" >
+        <%- article.content %>
     </div>
 </div>
+<nav class="navbar navbar-default navbar-fixed-bottom" >
+    <div class="container ">
+        <div class="clearfix text-muted" style="margin: 1em">
+            <p class="text-center" style="font-size: 100%;margin: 0em">
+                <b>
+                    RemarkCall
+                    <a class="glyphicon glyphicon-cloud" href="https://github.com/GargouillePao/remarkcall">
+                    </a>
+                </b>
+            </p>
+            <p class="text-center" style="font-size: 1%;margin: 0em">
+                By Gargouille
+            </p>
+        </div>
+    </div>
+</nav>
+
 <div id="remarkFloat" class="modal fade" role="dialog">
     <div class="modal-dialog" aria-hidden="true">
         <div class="modal-content">

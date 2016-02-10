@@ -35,7 +35,9 @@ Articles.prototype.add = function(title,content){
     var index = this.articles.length;
     var article = new Article();
     article.init(index);
-    article.content = content;
+    if(content!=""){
+        article.content = content;
+    }
     this.articles.push(article);
     this.socketAction(article);
 };
@@ -45,19 +47,9 @@ Articles.prototype.get = function(index){
     }
 };
 Articles.prototype.updateTitle = function(index,data,callback){
-    var self = this;
-    var datalines = data.substr(0,100).replace(/<[^>]+>/g,",");
-    datalines = datalines.split(",");
-    for(var i = 0;i<datalines.length;i++){
-        var title = datalines[i].trim();
-        if(title!=""&&title!="\n"&&title!="\t"){
-            self.articles[index].title = title;
-            callback(title);
-            break;
-        }
-    }
+    this.articles[index].updateTitle(data,callback);
 };
-Articles.prototype.setArticle = function(index,content){
+Articles.prototype.updateArticle = function(index,content){
     if(index<this.articles.length && index>=0){
         this.articles[index].content = content;
         this.save(index,content,5000);

@@ -5,55 +5,86 @@ var updateTimer = null;
 var remarkSelections = [];
 var differentOfArticle;
 var oldArticleHTML;
-var reviewer;
 var socket;
-var isAuthor;
+var articleInfo;
 $(document).on("ready",function(){
-    reviewer = $("#visitor").text();
+    var articleInfoHTML = $("#articleInfo").html();
+    articleInfo = JSON.parse(articleInfoHTML);
     init();
     handleSocket();
     handleEditor($("#summernote"));
-    isAuthor = $("#isAuthor").text();
-    if(isAuthor==""){
-        $('#summernote').summernote('disable');
-    }
+
     //editsFunc();
 });
 
 function init(){
     differentOfArticle = new diffDOM();
     oldArticleHTML = $("#summernote").html();
-    socket = io.connect("http://www.gargouilledragon.org:50303/article"+$("#index").html());
+    socket = io.connect("http://www.gargouilledragon.org:50303/article"+articleInfo.index);
 
-    $("#summernote").summernote({
-        dialogsFade: true,
-        toolbar: [
-            ['misc',['undo','redo']],
-            ['style', ['bold', 'italic', 'underline', 'clear']],
-            ['font', ['strikethrough', 'superscript', 'subscript']],
-            ['fontsize', ['fontsize']],
-            ['color', ['color']],
-            ['insert', ['round']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['height', ['height']],
-            ['highlight', ['highlight']],
-            ["Insert",["picture","link","vedio","table"]]
-        ]
-    });
 
+    if(!articleInfo.isAuthor){
+        initSummernote(articleInfo.editable);
+    }else{
+        initSummernote(true);
+        //$("#editCheckbox")
+    }
+    initRemarks();
+    //if(isAuthor)
+}
+
+function initRemarks (){
     $(".note-editable").find(".remark").on("click",function() {
         showFloatingRemark($(this));
     });
     $(".note-editable").find(".remark").each(function(key,elem){
         socket.emit("fetchRemarkCount",{index:$(elem).attr("remark-index")});
     });
+}
 
-    //;
+function initSummernote(editable){
+    var popup;
+    var editableStr;
+
+    if(editable){
+        popup = {
+            air: [
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough', 'superscript', 'subscript']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['insert', ['round']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                ['highlight', ['highlight']],
+                ["Insert",["picture","link","vedio","table"]]
+            ]
+        };
+        editableStr = "enable";
+    }else{
+        popup = {
+            air: [
+                ['insert', ['round']]
+            ]
+        };
+        editableStr = "disable";
+    }
+    $("#summernote").summernote('destroy');
+    $("#summernote").summernote({
+        dialogsFade: true,
+        airMode: true,
+        popover: popup
+    });
+
+    $("#summernote").summernote(editableStr);
 }
 
 function handleSocket(){
+    socket.on("getOnlineCount",function(msg){
+        $("#online").text(msg.count);
+    });
     socket.on("writeArticle",function(msg){
-        differentOfArticle.apply($(".note-editable")[0], msg);
+        differentOfArticle.apply($(".note-editable")[0], JSON.parse(msg));
         $(".note-editable").find(".remark").on("click",function() {
             showFloatingRemark($(this));
         });
@@ -78,16 +109,39 @@ function handleSocket(){
             }
         });
     });
+    if(!articleInfo.isAuthor){
+        socket.on("getEditInfo",function(msg){
+            console.log("Edit",msg);
+            if(msg.editable){
+                initSummernote(true);
+                $("#editLabel").text("允许编辑");
+            }else{
+                initSummernote(false);
+                $("#editLabel").text("不可编辑");
+            }
+        });
+    }else{
+        $("#editCheckbox").on("click",function(event){
+            var editable = this.checked;
+            socket.emit("pushEditInfo",{editable:editable});
+            if(editable){
+                $("#editLabel").text("允许编辑");
+            }else{
+                $("#editLabel").text("不可编辑");
+            }
+        });
+    }
+
 }
 
 function sendArticle(contents){
     if(contents!=oldArticleHTML){
         var different = getHtmlDiff(contents,oldArticleHTML,differentOfArticle);
         console.log(different);
-        socket.emit("writeArticle",different);
+        socket.emit("writeArticle",JSON.stringify(different));
         oldArticleHTML = contents;
     }
-    saveArticle($("#index").html(),contents);
+    saveArticle(articleInfo.index,contents);
 }
 
 function handleEditor(editor){
@@ -99,17 +153,6 @@ function handleEditor(editor){
     });
     editor.on("summernote.change", function(event, contents, $editable) {
         sendArticle(contents);
-    });
-    $(".note-editable").on("mouseup",function(event){
-        if(3==event.which){
-            gotTheSameRemark(function(got,selection){
-                if(got){
-                    showFloatingRemark(selection);
-                }else{
-                    showDialogRemark(selection);
-                }
-            });
-        }
     });
 }
 
@@ -180,7 +223,7 @@ function showFloatingRemark(selectedRange){
     var remarkIndex = selectedRange.attr("remark-index");
     var remarkTitle = selectedRange.text();
     showRemark(remarkTitle,function(remarks){
-        socket.emit("writeRemark",{reviewer:reviewer,index:remarkIndex,title:remarkTitle,remark:remarks});
+        socket.emit("writeRemark",{reviewer:articleInfo.visitor,index:remarkIndex,title:remarkTitle,remark:remarks});
         socket.emit("fetchRemarkCount",{index:remarkIndex});
     });
     socket.emit("fetchRemarks",{index:remarkIndex});
@@ -191,7 +234,7 @@ function showDialogRemark(selectedRange){
     var remarkTitle = selectedRange.toString();
     showRemark(remarkTitle,function(remarks){
         console.log(remarkIndex);
-        socket.emit("writeRemark",{reviewer:reviewer,index:remarkIndex,title:remarkTitle,remark:remarks});
+        socket.emit("writeRemark",{reviewer:articleInfo.visitor,index:remarkIndex,title:remarkTitle,remark:remarks});
         socket.emit("fetchRemarkCount",{index:remarkIndex});
         socket.once("newRemark",function(msg){
             remarkIndex = msg.index;

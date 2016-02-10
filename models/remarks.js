@@ -18,7 +18,6 @@ Remarks.prototype.init= function(index){
             return;
         }
         self.remarks = JSON.parse(data);
-        console.log(self.remarks);
     });
 };
 Remarks.prototype.append = function(index,reviewer,title,remark,callback){

@@ -6,20 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" src="jquery/dist/jquery.js"></script>
     <script type="text/javascript" src="bootstrap/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="./socket.io/socket.io.js" ></script>
     <link href="bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css">
     <script type="text/javascript">
-
+        var socket = io.connect("http://www.gargouilledragon.org:50303");
+        socket.on("getAllOnlineCount",function(msg){
+            $("#online").text(msg.count);
+        });
     </script>
 </head>
 <body>
 
-<nav class="navbar navbar-default ">
+<nav class="navbar navbar-default">
     <div class="container ">
         <div class="header clearfix">
             <nav>
                 <ul class="nav nav-pills pull-right">
                     <li class="navbar-text navbar-right">
-                        online : <span id="visitor"><%= user %></span>
+                        online : <span id="online">0</span>
                     </li>
                     <li class="navbar-text navbar-right">
                         visitor : <span id="visitor"><%= user %></span>
@@ -43,5 +47,21 @@
         <% }) %>
     </div>
 </div>
+<nav class="navbar navbar-default navbar-bottom" style="margin-bottom: 0em;margin-top: 20%">
+    <div class="container ">
+        <div class="clearfix  pager text-muted">
+            <h4 class="text-center">
+                RemarkCall
+                <span>
+                <a class="glyphicon glyphicon-cloud" href="https://github.com/GargouillePao/remarkcall">
+                </a>
+            </span>
+            </h4>
+            <h6 class="text-center">
+                By Gargouille
+            </h6>
+        </div>
+    </div>
+</nav>
 </body>
 </html>

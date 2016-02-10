@@ -63,7 +63,7 @@ Initializer.prototype.initSessionControl = function(secretLength,expireMinute){
     this.app.use(function(req,res,next){
         console.log(req.url);
         if(req.url!="/login"){
-            if (req.session.sign) {//¼ì²éÓÃ»§ÊÇ·ñÒÑ¾­µÇÂ¼
+            if (req.session.sign) {//ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½Ç·ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½Â¼
                 next();
             }else{
                 res.redirect("/login");
@@ -84,16 +84,59 @@ Initializer.prototype.initSocketIO = function(){
     var io = require("socket.io")(http);
 
     var self = this;
+    var allOnlineList = [];
+    var allOutlineList = [];
+
+    io.on("connection",function(socket){
+
+        if(allOnlineList.indexOf(socket)<=-1){
+            allOnlineList.push(socket);
+        }
+        if(allOutlineList.indexOf(socket)>-1){
+            allOutlineList.splice(allOutlineList.indexOf(socket), 1);
+        }
+        console.log("Connect",allOnlineList.length);
+        io.emit("getAllOnlineCount",{count:allOnlineList.length});
+
+        socket.on('disconnect', function () {
+            allOnlineList.splice(allOnlineList.indexOf(socket), 1);
+            if(allOutlineList.indexOf(socket)<=-1){
+                allOutlineList.push(socket);
+            }
+            console.log("DisConnect",allOnlineList.length);
+            io.emit("getAllOnlineCount",{count:allOnlineList.length});
+        });
+    });
 
     remarkcall.articles.setSocketAction(function(article){
         var nsp = io.of(article.nsp);
+        var onlineList = [];
+        var outlineList = [];
         nsp.on("connection", function(socket){
+            if(onlineList.indexOf(socket)<=-1){
+                onlineList.push(socket);
+            }
+            if(outlineList.indexOf(socket)>-1){
+                outlineList.splice(outlineList.indexOf(socket), 1);
+            }
+            nsp.emit("getOnlineCount",{count:onlineList.length});
+            socket.on('disconnect', function () {
+                onlineList.splice(onlineList.indexOf(socket), 1);
+                if(outlineList.indexOf(socket)<=-1){
+                    outlineList.push(socket);
+                }
+                nsp.emit("getOnlineCount",{count:onlineList.length});
+            });
+
             socket.on("writeArticle", function(msg){
                 socket.broadcast.emit("writeArticle", msg);
             });
             socket.on("saveArticle",function(msg){
                 article.content = msg.content;
                 article.save(self.timeStampForSavingArticle);
+            });
+            socket.on("fetchOnlineCount",function(msg){
+                socket.emit("getOnlineCount",{count:onlineList.length});
             });
             socket.on("writeRemark",function(msg){
                 article.remark(msg.index,msg.reviewer,msg.title,msg.remark,function(remarks,remarkCount){
@@ -122,6 +165,14 @@ Initializer.prototype.initSocketIO = function(){
                     data.remarkCount = 1;
                 }
                 socket.emit("getRemarkCount",data);
+            });
+            socket.on("pushEditInfo",function(msg){
+               if(msg.editable){
+                   article.setEditable(true);
+               }else{
+                   article.setEditable(false);
+               }
+                socket.broadcast.emit("getEditInfo", msg);
             });
         });
     });
