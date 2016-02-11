@@ -7,12 +7,65 @@ function appendHighlight(selectedRange,index,clickEvent){
     var span = document.createElement("span");
     span.className = "remark";
     span.appendChild(selectedText);
-    span.setAttribute("data-toggle","tooltip");
-    span.setAttribute("data-placement","top");
     span.setAttribute("title","remark");
     span.setAttribute("remark-index",index);
     span.setAttribute("remark-count",1);
     span.onclick = clickEvent;
+    /*
+     span.setAttribute("data-toggle","popover");
+     span.setAttribute("data-placement","bottom");
+    span.setAttribute("data-template",
+        "<div class='popover' role='tooltip'>" +
+        " <div class='arrow'> " +
+        "</div> " +
+        "<h3 class='popover-title'>" +
+        "Popover title </h3>" +
+        " <div class='popover-content'>" +
+        " </div> " +
+        "<div id='remark-summernote'> </div>" +
+        "<a href='#' id='remarkSubmit class='btn btn-success'>Remark!</a>" +
+        "</div>");
+    span.setAttribute("data-html",true);
+
+
+    $(span).on('hidden.bs.popover', function () {
+        var popover = $(this);
+        popover.off("remark");
+        popover.attr("content","");
+        popover.off("hidden.bs.popover");
+        popover.off("shown.bs.popover");
+        popover.find("#remarkSubmit").off("click");
+    });
+    $(span).on('shown.bs.popover', function () {
+        var popover = $(this);
+        var remarks = "";
+        popover.on("remark",function(event,reviewer,title,remark){
+            remarks = "";
+            console.log("remark",remark);
+            if(title==remarkTitle){
+                var content = popover.attr("content")+appendRemark(reviewer,remark);
+                popover.attr("content",content);
+            }
+        });
+        popover.attr("title","Remark:" + remarkTitle);
+        popover.find("#remark-summernote").summernote({
+            toolbar: [
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough', 'superscript', 'subscript']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ["Insert",["link"]]
+            ]
+        });
+        popover.find(".note-editable").html("");
+        popover.find("#remark-summernote").on("summernote.change",function(event, contents, $editable){
+            remarks = contents;
+        });
+        popover.find("#remarkSubmit").on("click",function(event){
+            callback(remarks);
+        });
+    });
+    */
     selectedRange.insertNode(span);
 }
 
@@ -21,7 +74,7 @@ function appendRemark(reviewer,remark){
     var reviewerSpan = document.createElement("div");
     var remarkSpan = document.createElement("div");
     reviewerSpan.className = "remarkReviewer";
-    reviewerSpan.innerHTML = reviewer;
+    reviewerSpan.innerHTML = "<b>"+reviewer+"</b>";
     remarkSpan.className = "remarkContent";
     remarkSpan.innerHTML = remark;
     remarkItem.className = "remarkItem list-group-item";
@@ -40,6 +93,7 @@ function showRemark(remarkTitle,callback){
         modal.off("hidden.bs.modal");
         modal.off("show.bs.modal");
         modal.find("#remarkSubmit").off("click");
+        modal.find("#remarkNote").off("summernote.change");
     });
     modalDialog.on("show.bs.modal", function (event) {
         var modal = $(this);
@@ -52,14 +106,17 @@ function showRemark(remarkTitle,callback){
             }
         });
         modal.find(".modal-header").find("h3").text("Remark:" + remarkTitle);
+        var popup = [
+            ['style', ['fontsize','bold','color', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough', 'superscript', 'subscript']]
+        ];
         modal.find("#remarkNote").summernote({
-            toolbar: [
-                ['style', ['bold', 'italic', 'underline', 'clear']],
-                ['font', ['strikethrough', 'superscript', 'subscript']],
-                ['fontsize', ['fontsize']],
-                ['color', ['color']],
-                ["Insert",["link"]]
-            ]
+            dialogsFade: true,
+            airMode:true,
+            placeholder: 'write here...',
+            popover:{
+                air:popup
+            }
         });
         modal.find(".note-editable").html("");
         modal.find("#remarkNote").on("summernote.change",function(event, contents, $editable){

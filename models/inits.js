@@ -174,6 +174,10 @@ Initializer.prototype.initSocketIO = function(){
                }
                 socket.broadcast.emit("getEditInfo", msg);
             });
+            socket.on("pushChatMsg",function(msg){
+                console.log(msg)
+                nsp.emit("getChatMsg",msg);
+            });
         });
     });
     return http;

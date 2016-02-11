@@ -1,0 +1,58 @@
+.chat-note{
+}
+
+.chat-bar{
+    width: 3em;
+    height: 3em;
+    background: #5e5e5e;
+
+    float: right;
+    margin-top: 6.5em;
+    border: 0.2em solid #5e5e5e;
+    border-radius: 100%;
+
+    box-shadow: 0px 0px 0px #888888;
+
+    text-align: center;
+    color: white;
+    line-height: 2.6em;
+    padding: 0em;
+
+    transition: all 0.3s;
+    -moz-transition: all 0.3s; /* Firefox 4 */
+    -webkit-transition: all 0.3s; /* Safari ºÍ Chrome */
+    -o-transition: all 0.3s; /* Opera */
+}
+.chat-bar:hover{
+    border: 0.2em solid #cecece;
+    background: white;
+    color: #cecece;
+}
+.chat-bar{
+    position: absolute;
+    top: 0em;
+    right: 13%
+}
+
+.chat-area{
+    padding: 1em;
+
+}
+.chat-area-inner{
+    margin-bottom: 1em;
+    padding: 1em;
+    box-shadow: 0px 0px 5px #c8c8c8;
+}
+.chat-popover{
+
+}
+.chat-content{
+    width: 19em;
+    height: 16em;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.chat-content-wrapper{
+    width: 24em;
+}
+

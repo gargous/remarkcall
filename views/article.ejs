@@ -8,6 +8,7 @@
     <link href="./summernote/dist/summernote.css" rel="stylesheet" type="text/css">
     <link href="./prism/prism.css" rel="stylesheet" type="text/css">
     <link href="./css/article.css" rel="stylesheet" type="text/css">
+    <link href="./css/chat.css" rel="stylesheet" type="text/css">
     <link href="./css/awesome-bootstrap-checkbox.css" rel="stylesheet" type="text/css" />
 
 
@@ -22,9 +23,11 @@
     <script type="text/javascript" src="./js/diffString.js"></script>
     <script type="text/javascript" src="./js/remark.js"></script>
     <script type="text/javascript" src="./js/article.js"></script>
+    <script type="text/javascript" src="./js/chat.js"></script>
     <title></title>
     <script>
         $(function () { $("[data-toggle='tooltip']").tooltip(); });
+        $(function () {$('[data-toggle="popover"]').popover()})
     </script>
 </head>
 <body>
@@ -42,22 +45,25 @@
                 </ul>
             </nav>
             <h3 class="text-muted">RemarkCall</h3>
-
-            <ol class="breadcrumb" style="background: transparent;padding-left: 0em">
+            <ol class="breadcrumb" style="background: transparent;padding-left: 0em;padding-right: 0em;margin-right: 0em">
                 <li><a href="/index">Home</a></li>
                 <li class="active">
                     <%- article.title %>
                 </li>
                 <% if(article.isAuthor){ %>
                 <span class="navbar-right text-muted checkbox  checkbox-inline checkbox-info">
+                    <% if(article.editable){%>
+                    <input id="editCheckbox" checked type="checkbox">
+                    <label id="editLabel">
+                        允许编辑
+                    </label>
+                    <% }else{ %>
                     <input id="editCheckbox" type="checkbox">
                     <label id="editLabel">
-                        <% if(article.editable){%>
-                        允许编辑
-                        <% }else{ %>
                         不可编辑
-                        <% } %>
                     </label>
+                    <% } %>
+
                 </span>
                 <% }else{%>
                 <span id="editLabel" class="navbar-right text-muted ">
@@ -96,19 +102,49 @@
         </div>
     </div>
 </nav>
+<div id="chat-bar" blink="0" class="chat-bar btn btn-default"
+     data-toggle="popover"
+     data-placement="bottom"
+     data-title="Chatting"
+     data-template="
+             <div class='popover chat-popover' role='tooltip'>
+                <div class='arrow'>
+                </div>
+                <h3 class='popover-title'>
+                Popover title
+                </h3>
+                <div class='chat-content-wrapper'>
+                    <ul class='popover-content list-group chat-content'>
+                    </ul>
+                </div>
 
-<div id="remarkFloat" class="modal fade" role="dialog">
-    <div class="modal-dialog" aria-hidden="true">
+                <div class='chat-area'>
+                    <div class='chat-area-inner'>
+                        <div id='chat-note' class='chat-note'></div>
+                    </div>
+                    <div id='chat-summit' class='btn btn-success btn-block'>提交</div>
+                </div>
+             </div>
+             "
+     data-html="true"
+     data-content="">
+    <b>chat</b>
+</div>
+<div id="remarkFloat" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm"  aria-hidden="true">
         <div class="modal-content">
             <div class="modal-header">
                 <a class="close" data-dismiss="modal">×</a>
-                <h3>This is a Modal Heading</h3>
+                <h3 style="margin: 0em">This is a Modal Heading</h3>
             </div>
             <ul class="modal-body list-group">
             </ul>
-            <div id="remarkNote" style="float: left;"></div>
-            <div class="modal-footer">
-                <a href="#" id="remarkSubmit" class="btn btn-success">Remark!</a>
+            <div class="page-header" style="margin-bottom: 0em"></div>
+            <div class="chat-area ">
+                <div class="chat-area-inner">
+                    <div id="remarkNote"></div>
+                </div>
+                <a href="#" id="remarkSubmit" class="btn btn-success btn-block">评论!</a>
             </div>
         </div>
     </div>

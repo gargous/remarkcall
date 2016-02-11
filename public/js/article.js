@@ -13,7 +13,6 @@ $(document).on("ready",function(){
     init();
     handleSocket();
     handleEditor($("#summernote"));
-
     //editsFunc();
 });
 
@@ -21,7 +20,6 @@ function init(){
     differentOfArticle = new diffDOM();
     oldArticleHTML = $("#summernote").html();
     socket = io.connect("http://www.gargouilledragon.org:50303/article"+articleInfo.index);
-
 
     if(!articleInfo.isAuthor){
         initSummernote(articleInfo.editable);
@@ -73,6 +71,7 @@ function initSummernote(editable){
     $("#summernote").summernote({
         dialogsFade: true,
         airMode: true,
+        placeholder: 'write here...',
         popover: popup
     });
 
@@ -265,4 +264,8 @@ function saveArticle(index,content){
         clearTimeout(updateTimer);
         updateTimer = null;
     },2000);
+}
+
+function getSocket(){
+    return socket;
 }

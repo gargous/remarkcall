@@ -1,13 +1,21 @@
+# RemarkCall
+---
+这是一个实时应用，现在具有实时编辑文档，实时评论和聊天三个功能。
+
+开发工具总览：
+
+- 前端
+-- ui：bootstrap
+-- 富文本编辑器：[summernote](https://github.com/summernote/summernote/)
+-- 传输处理：[diffDOM](https://github.com/fiduswriter/diffDOM)
+- 后台(nodejs)
+-- 基础框架：express
+-- 实时通信：socket.io
+
 # 博客
 ---
-这是刚刚搭到一半不到的博客
+用RemarkCall搭的博客
 
-看上去和普通博客不一样，它是一个实时的博客，现在做到的功能是实时编辑和实时评论。
+[文章内容(现在还没有)](https://github.com/GargouillePao/remarkcall/tree/master/storage/articles)
 
-其实这个项目是模仿石墨文档做的，当时用的时候就觉得很有意思，可以一边写文档一边观看别人修改自己的文档，评论也是模拟的单个字评论，感觉这样挺酷的，有种固定弹幕的感觉。
-
-现在界面是bootstrap做的，总体感觉就是。。。╮(╯▽╰)╭，
-
-反正会慢慢完善的，不过我基本可以开始写博文了。。。感觉有了这种评论方式都不需要底部全文评论了。。。
-
-写到现在的感受就是前段水好深。。。
+[博客地址(现在可以聊天，依旧没有文章。。。)](http://www.gargouilledragon.org:50303/)
