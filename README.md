@@ -5,12 +5,12 @@
 开发工具总览：
 
 - 前端
--- ui：bootstrap
--- 富文本编辑器：[summernote](https://github.com/summernote/summernote/)
--- 传输处理：[diffDOM](https://github.com/fiduswriter/diffDOM)
+  - ui：bootstrap
+  - 富文本编辑器：[summernote](https://github.com/summernote/summernote/)
+  - 传输处理：[diffDOM](https://github.com/fiduswriter/diffDOM)
 - 后台(nodejs)
--- 基础框架：express
--- 实时通信：socket.io
+  - 基础框架：express
+  - 实时通信：socket.io
 
 # 博客
 ---
