@@ -102,6 +102,18 @@ Initializer.prototype.initSocketIO = function(){
         console.log("DisConnect Out",outline.getLength());
     }
 
+    function isTooFast(oldDate){
+        var dateNow = new Date();
+        console.log(dateNow-oldDate);
+        var detaDate = dateNow-oldDate;
+        oldDate = dateNow;
+        if(detaDate<1000){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     io.on("connection",function(socket){
         var username;
         socket.on('pushUser', function (msg) {
@@ -135,22 +147,29 @@ Initializer.prototype.initSocketIO = function(){
         var nsp = io.of(article.nsp);
         var onlineList = new remarkcall.SocketList();
         var outlineList = new remarkcall.SocketList();
+        var chatMsgList = [];
+        var chatMsgNow = "";
+        var dateOld = new Date();
+
         nsp.on("connection", function(socket){
             var username;
-            socket.on('pushUser', function (msg) {
+            socket.on("disconnect", function () {
+                handleSocketQuit(onlineList,outlineList,username,socket);
+                handleSocketQuit(allOnlineList,allOutlineList,username,socket);
+                nsp.emit("getOnlineCount",{count:onlineList.getLength()});
+            });
+            socket.on("pushUser", function (msg) {
                 username = msg.username;
                 handleSocketEnter(onlineList,outlineList,username,socket);
                 handleSocketEnter(allOnlineList,allOutlineList,username,socket);
                 nsp.emit("getOnlineCount",{count:onlineList.getLength()});
             });
-            socket.on('fetchOnlineList', function (msg) {
+            socket.on("fetchOnlineList", function (msg) {
                 var usernameList=onlineList.getUserList();
                 socket.emit("getOnlineList",{list:usernameList});
             });
-            socket.on('disconnect', function () {
-                handleSocketQuit(onlineList,outlineList,username,socket);
-                handleSocketQuit(allOnlineList,allOutlineList,username,socket);
-                nsp.emit("getOnlineCount",{count:onlineList.getLength()});
+            socket.on("fetchOnlineCount",function(msg){
+                socket.emit("getOnlineCount",{count:onlineList.length});
             });
             socket.on("writeArticle", function(msg){
                 socket.broadcast.emit("writeArticle", msg);
@@ -159,9 +178,7 @@ Initializer.prototype.initSocketIO = function(){
                 article.content = msg.content;
                 article.save(self.timeStampForSavingArticle);
             });
-            socket.on("fetchOnlineCount",function(msg){
-                socket.emit("getOnlineCount",{count:onlineList.length});
-            });
+
             socket.on("writeRemark",function(msg){
                 article.remark(msg.index,msg.reviewer,msg.title,msg.remark,function(remarks,remarkCount){
                     nsp.emit("getRemark",msg);
@@ -176,6 +193,9 @@ Initializer.prototype.initSocketIO = function(){
                 });
             });
             socket.on("fetchRemarks",function(msg){
+                if(isTooFast(dateOld)){
+                    return;
+                }
                 article.articleInfo.foreach(msg.index,function(remark){
                     socket.emit("getRemark",remark);
                 });
@@ -191,17 +211,25 @@ Initializer.prototype.initSocketIO = function(){
                 socket.emit("getRemarkCount",data);
             });
             socket.on("pushEditInfo",function(msg){
-               if(msg.editable){
-                   article.setEditable(true);
-               }else{
-                   article.setEditable(false);
-               }
+                if(isTooFast(dateOld)){
+                    return
+                }
+                if(msg.editable){
+                    article.setEditable(true);
+                }else{
+                    article.setEditable(false);
+                }
                 article.updateTitle();
                 socket.broadcast.emit("getEditInfo", msg);
             });
             socket.on("pushChatMsg",function(msg){
-                console.log(msg)
+                if(chatMsgNow==msg && isTooFast(dateOld)){
+                    return;
+                }
+                console.log(msg);
                 nsp.emit("getChatMsg",msg);
+                chatMsgList.push(msg);
+                chatMsgNow = msg;
             });
         });
     });

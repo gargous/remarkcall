@@ -21,6 +21,7 @@ function init(){
     oldArticleHTML = $("#summernote").html();
     socket = io.connect("http://www.gargouilledragon.org:50303/article"+articleInfo.index);
     if(!articleInfo.isAuthor){
+        console.log(articleInfo.editable);
         initSummernote(articleInfo.editable);
     }else{
         initSummernote(true);
@@ -32,6 +33,7 @@ function init(){
 
 function initRemarks (){
     $(".note-editable").find(".remark").on("click",function() {
+        console.log("12323");
         showFloatingRemark($(this));
     });
     $(".note-editable").find(".remark").each(function(key,elem){
@@ -73,9 +75,8 @@ function initSummernote(editable){
         placeholder: 'write here...',
         popover: popup
     });
-
-    $("#summernote").summernote(editableStr);
     $("#summernote").summernote("lineHeight", 1);
+    $("#summernote").summernote(editableStr);
 }
 
 function handleSocket(){
@@ -96,8 +97,9 @@ function handleSocket(){
         var reviewer = msg.reviewer;
         var title = msg.title;
         var remark = msg.remark;
+        var remarkTime = new Date().toTimeString();
         if(msg.remark!=""){
-            modal.trigger("remark",[reviewer,title,remark]);
+            modal.trigger("remark",[reviewer,title,remark,remarkTime]);
         }
     });
     socket.on("getRemarkCount",function(msg){

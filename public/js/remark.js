@@ -85,6 +85,7 @@ function appendRemark(reviewer,remark){
 
 function showRemark(remarkTitle,callback){
     var modalDialog = $("#remarkFloat");
+    var oldRemarkTime = "";
     modalDialog.on("hidden.bs.modal",function(e){
         var modal = $(this);
         modal.off("remark");
@@ -99,12 +100,15 @@ function showRemark(remarkTitle,callback){
         var modal = $(this);
         var remarks = "";
         var oldRemarks = "";
-        modal.on("remark",function(event,reviewer,title,remark){
-            remarks = "";
-            oldRemarks = "";
-            console.log("remark",remark);
-            if(title==remarkTitle){
-                modal.find(".modal-body").append(appendRemark(reviewer,remark));
+        modal.on("remark",function(event,reviewer,title,remark,remarkTime){
+            console.log("remarkTime",remarkTime);
+            if(remarkTime!=oldRemarkTime){
+                remarks = "";
+                oldRemarks = "";
+                console.log("remark",remark);
+                if(title==remarkTitle){
+                    modal.find(".modal-body").append(appendRemark(reviewer,remark));
+                }
             }
         });
         modal.find(".modal-header").find("h3").text("Remark:" + remarkTitle);
