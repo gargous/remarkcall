@@ -1,0 +1,26 @@
+<nav>
+    <ul class="nav nav-pills pull-right">
+        <li>
+            <a class="navbar-text navbar-right btn btn-sm">
+                visitor : <span id="visitor"><%= articleInfo.visitor %></span>
+            </a>
+        </li>
+        <li class="dropdown">
+            <a class="navbar-text navbar-right btn btn-sm"
+               data-toggle="dropdown"
+               aria-haspopup="true"
+               aria-expanded="false"
+               id="onlineDropMenu"
+               onclick="getOnlineList()">
+                online : <span id="online">0</span>
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" id="onlineListMenu" aria-labelledby="onlineDropMenu" style="position: absolute">
+            </ul>
+        </li>
+    </ul>
+    <div id="articleInfo" style="display: none">
+        <%- JSON.stringify(articleInfo) %>
+    </div>
+</nav>
+

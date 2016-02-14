@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RemarkCall ArticleList</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="bootstrap/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="./socket.io/socket.io.js" ></script>
+    <link href="bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="./css/global.css" rel="stylesheet" type="text/css">
+    <link href="./css/article.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="./js/navtop.js" ></script>
+    <script type="text/javascript" src="./js/articleList.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+    <div class="container ">
+        <div class="header clearfix">
+            <% include navtop.ejs %>
+            <h3 class="text-muted">RemarkCall</h3>
+            <ol class="breadcrumb" style="background: transparent;padding-left: 0em">
+                <li><a href="/index">主页</a></li>
+                <li class="active">文章列表</li>
+            </ol>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <h1 style="font-family: 'Microsoft YaHei'">文章列表</h1>
+    <% if(articleInfo.isAuthor){%>
+    <a class="btn btn-info" onclick="addArticle(<%- page %>)">
+        <label class="glyphicon glyphicon-pencil"></label>
+        添加文章
+    </a>
+    <% } %>
+    <div id="articleList">
+        <div style="margin-top: 2em">
+            <% if(articlesTitle && articlesTitle.length>0){%>
+            <% for(var i = 0;i < articlesTitle.length;i++){ %>
+                <div class="list-item-wrapper ">
+                    <a class="list-item" article="<%= articlesTitle[i].title %>" href="article?index=<%= articlesTitle[i].index %>">
+                        <%= articlesTitle[i].title %>
+                    </a>
+                </div>
+            <% if(articleInfo.isAuthor){%>
+            <a class="btn btn-round glyphicon glyphicon-remove btn-danger "
+               style="position: absolute;right: 10%;top:<%- i*3.43 %>em;margin-top: 19.5em"
+               onclick="removeArticle(<%- [page,articlesTitle[i].index] %>)">
+            </a>
+            <% } %>
+            <% } %>
+            <% } %>
+        </div>
+        <% if(pageCount>1){ %>
+        <ul class="pagination">
+            <li>
+                <a href="?page=<%- parseInt(page)-1 %>" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <% for(var i=0;i<pageCount;i++){ %>
+            <li <% if(i == page-1){%>
+                    class="active"
+                    <% } %>
+                    >
+                <a href="?page=<%- i+1 %>">
+                    <%- i+1 %>
+                </a>
+            </li>
+            <% } %>
+            <li>
+                <a href="?page=<%- parseInt(page)+1 %>" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+        <% } %>
+    </div>
+</div>
+<% include navbottom.ejs %>
+</body>
+</html>
