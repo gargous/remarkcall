@@ -76,58 +76,82 @@ Initializer.prototype.initSessionControl = function(secretLength,expireMinute){
 Initializer.prototype.initModels = function(){
     remarkcall.articles = require(remarkcall.getAbsolutePath("/models/articles"))();
     remarkcall.articles.foreach(function(data,index){
-        remarkcall.articles.setRemarks(index,require(remarkcall.getAbsolutePath("/models/remarks"))())
+        remarkcall.articles.setArticleInfo(index,require(remarkcall.getAbsolutePath("/models/articleInfo"))())
     });
+    remarkcall.SocketList = require(remarkcall.getAbsolutePath("/models/socketList"));
 };
 Initializer.prototype.initSocketIO = function(){
     var http = require("http").Server(this.app);
     var io = require("socket.io")(http);
 
     var self = this;
-    var allOnlineList = [];
-    var allOutlineList = [];
+    var allOnlineList = new remarkcall.SocketList();
+    var allOutlineList = new remarkcall.SocketList();
+
+
+    function handleSocketEnter(online,outline,username,socket){
+        online.add(username,socket);
+        //outline.remove(socket);
+        console.log("Connect On",online.getLength());
+        console.log("Connect Out",outline.getLength());
+    }
+    function handleSocketQuit(online,outline,username,socket){
+        //outline.add(username,socket);
+        online.remove(socket);
+        console.log("DisConnect On",online.getLength());
+        console.log("DisConnect Out",outline.getLength());
+    }
 
     io.on("connection",function(socket){
-
-        if(allOnlineList.indexOf(socket)<=-1){
-            allOnlineList.push(socket);
-        }
-        if(allOutlineList.indexOf(socket)>-1){
-            allOutlineList.splice(allOutlineList.indexOf(socket), 1);
-        }
-        console.log("Connect",allOnlineList.length);
-        io.emit("getAllOnlineCount",{count:allOnlineList.length});
-
-        socket.on('disconnect', function () {
-            allOnlineList.splice(allOnlineList.indexOf(socket), 1);
-            if(allOutlineList.indexOf(socket)<=-1){
-                allOutlineList.push(socket);
-            }
-            console.log("DisConnect",allOnlineList.length);
-            io.emit("getAllOnlineCount",{count:allOnlineList.length});
+        var username;
+        socket.on('pushUser', function (msg) {
+            console.log(msg.username,"login");
+            username = msg.username;
+            handleSocketEnter(allOnlineList,allOutlineList,username,socket);
+            io.emit("getAllOnlineCount",{count:allOnlineList.getLength()});
+        });
+        socket.on('fetchOnlineList', function (msg) {
+            var usernameList=allOnlineList.getUserList();
+            socket.emit("getOnlineList",{list:usernameList});
+        });
+        socket.on("addArticle",function(msg){
+            msg.flag = true;
+            remarkcall.articles.add(false,"新文章 "+remarkcall.articles.summary(),"");
+            io.emit("newArticle",msg);
+        });
+        socket.on("removeArticle",function(msg){
+            msg.flag = true;
+            //var page = msg.page;
+            remarkcall.articles.remove(msg.index);
+            io.emit("newArticle",msg);
+        });
+        socket.on("disconnect", function () {
+            handleSocketQuit(allOnlineList,allOutlineList,username,socket);
+            io.emit("getAllOnlineCount",{count:allOnlineList.getLength()});
         });
     });
 
     remarkcall.articles.setSocketAction(function(article){
         var nsp = io.of(article.nsp);
-        var onlineList = [];
-        var outlineList = [];
+        var onlineList = new remarkcall.SocketList();
+        var outlineList = new remarkcall.SocketList();
         nsp.on("connection", function(socket){
-            if(onlineList.indexOf(socket)<=-1){
-                onlineList.push(socket);
-            }
-            if(outlineList.indexOf(socket)>-1){
-                outlineList.splice(outlineList.indexOf(socket), 1);
-            }
-            nsp.emit("getOnlineCount",{count:onlineList.length});
-            socket.on('disconnect', function () {
-                onlineList.splice(onlineList.indexOf(socket), 1);
-                if(outlineList.indexOf(socket)<=-1){
-                    outlineList.push(socket);
-                }
-                nsp.emit("getOnlineCount",{count:onlineList.length});
+            var username;
+            socket.on('pushUser', function (msg) {
+                username = msg.username;
+                handleSocketEnter(onlineList,outlineList,username,socket);
+                handleSocketEnter(allOnlineList,allOutlineList,username,socket);
+                nsp.emit("getOnlineCount",{count:onlineList.getLength()});
             });
-
+            socket.on('fetchOnlineList', function (msg) {
+                var usernameList=onlineList.getUserList();
+                socket.emit("getOnlineList",{list:usernameList});
+            });
+            socket.on('disconnect', function () {
+                handleSocketQuit(onlineList,outlineList,username,socket);
+                handleSocketQuit(allOnlineList,allOutlineList,username,socket);
+                nsp.emit("getOnlineCount",{count:onlineList.getLength()});
+            });
             socket.on("writeArticle", function(msg){
                 socket.broadcast.emit("writeArticle", msg);
             });
@@ -148,19 +172,19 @@ Initializer.prototype.initSocketIO = function(){
                     msg.remarkCount = remarkCount;
                     nsp.emit("getRemarkCount",msg);
 
-                    article.remarks.save(self.timeStampForSavingRemarks);
+                    article.articleInfo.save(self.timeStampForSavingRemarks);
                 });
             });
             socket.on("fetchRemarks",function(msg){
-                article.remarks.foreach(msg.index,function(remark){
+                article.articleInfo.foreach(msg.index,function(remark){
                     socket.emit("getRemark",remark);
                 });
             });
             socket.on("fetchRemarkCount",function(msg){
                 var data = {};
                 data.index = msg.index;
-                if(article.remarks.get(msg.index) && article.remarks.get(msg.index).length>0){
-                    data.remarkCount = article.remarks.get(msg.index).length;
+                if(article.articleInfo.get(msg.index) && article.articleInfo.get(msg.index).length>0){
+                    data.remarkCount = article.articleInfo.get(msg.index).length;
                 }else{
                     data.remarkCount = 1;
                 }
@@ -172,6 +196,7 @@ Initializer.prototype.initSocketIO = function(){
                }else{
                    article.setEditable(false);
                }
+                article.updateTitle();
                 socket.broadcast.emit("getEditInfo", msg);
             });
             socket.on("pushChatMsg",function(msg){

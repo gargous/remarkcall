@@ -12,7 +12,9 @@ $(document).on("ready",function(){
     var chatContent = $("<ul></ul>");
     //console.log(chatBarCss);
     $("#chat-bar").on("shown.bs.popover",function(){
-        $("#chat-bar").css(chatBarOldCss);
+        setTimeout(function(){
+            $("#chat-bar").css(chatBarOldCss);
+        },1000);
         var chatSummit = $("#chat-summit");
         var summerNote = $("#chat-note");
         $(".chat-popover").find(".popover-content").html(chatContent.html());
@@ -30,12 +32,24 @@ $(document).on("ready",function(){
             }
         });
         var content = "";
+        var contentOld = "";
+        var dateOld = new Date();
         //summerNote.summernote('lineHeight', 1.5);
         summerNote.on("summernote.change",function(event, contents, $editable){
             content = contents;
         });
-        chatSummit.on("click",function(){
+        chatSummit.on("click",function(event){
+            if(contentOld==content){
+                var dateNow = new Date();
+                console.log(dateNow-dateOld);
+                var detaDate = dateNow-dateOld;
+                dateOld = dateNow;
+                if(detaDate<800){
+                    return;
+                }
+            }
             getSocket().emit("pushChatMsg",{name:$("#visitor").text(),content:content})
+            contentOld = content;
         });
 
     });

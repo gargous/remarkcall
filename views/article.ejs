@@ -7,6 +7,7 @@
     <link href="./bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="./summernote/dist/summernote.css" rel="stylesheet" type="text/css">
     <link href="./prism/prism.css" rel="stylesheet" type="text/css">
+    <link href="./css/global.css" rel="stylesheet" type="text/css">
     <link href="./css/article.css" rel="stylesheet" type="text/css">
     <link href="./css/chat.css" rel="stylesheet" type="text/css">
     <link href="./css/awesome-bootstrap-checkbox.css" rel="stylesheet" type="text/css" />
@@ -21,10 +22,12 @@
     <script type="text/javascript" src="./js/summernote-ext-roundtext.js"></script>
     <script type="text/javascript" src="./js/diffDOM.js"></script>
     <script type="text/javascript" src="./js/diffString.js"></script>
+
+    <script type="text/javascript" src="./js/navtop.js" ></script>
     <script type="text/javascript" src="./js/remark.js"></script>
     <script type="text/javascript" src="./js/article.js"></script>
     <script type="text/javascript" src="./js/chat.js"></script>
-    <title></title>
+    <title>RemarkCall Article:<%- article.title %></title>
     <script>
         $(function () { $("[data-toggle='tooltip']").tooltip(); });
         $(function () {$('[data-toggle="popover"]').popover()})
@@ -34,25 +37,20 @@
 <nav class="navbar navbar-default">
     <div class="container ">
         <div class="header clearfix">
-            <nav>
-                <ul class="nav nav-pills pull-right">
-                    <li class="navbar-text navbar-right">
-                        online : <span id="online">0</span>
-                    </li>
-                    <li class="navbar-text navbar-right">
-                        visitor : <span id="visitor"><%= article.visitor %></span>
-                    </li>
-                </ul>
-            </nav>
+            <% include navtop.ejs %>
             <h3 class="text-muted">RemarkCall</h3>
-            <ol class="breadcrumb" style="background: transparent;padding-left: 0em;padding-right: 0em;margin-right: 0em">
-                <li><a href="/index">Home</a></li>
+            <ol class="breadcrumb" style="background: transparent;padding-left: 0em;float:left;margin-right: 2em">
+                <li><a href="/index">主页</a></li>
+                <li><a href="/article">文章列表</a></li>
                 <li class="active">
                     <%- article.title %>
                 </li>
-                <% if(article.isAuthor){ %>
-                <span class="navbar-right text-muted checkbox  checkbox-inline checkbox-info">
-                    <% if(article.editable){%>
+
+            </ol>
+            <div class=" text-muted " style="padding: 0.5em;">
+                <% if(articleInfo.isAuthor){ %>
+                <span class="checkbox  checkbox-inline checkbox-info">
+                    <% if(articleInfo.editable){%>
                     <input id="editCheckbox" checked type="checkbox">
                     <label id="editLabel">
                         允许编辑
@@ -63,21 +61,17 @@
                         不可编辑
                     </label>
                     <% } %>
-
                 </span>
-                <% }else{%>
-                <span id="editLabel" class="navbar-right text-muted ">
-                    <% if(article.editable){%>
+                <% }else{ %>
+                <span id="editLabel" style="line-height: 1.6em;">
+                    <% if(articleInfo.editable){%>
                     允许编辑
                     <% }else{ %>
                     不可编辑
                     <% } %>
                 </span>
                 <% } %>
-            </ol>
-        </div>
-        <div id="articleInfo" style="display: none">
-            <%- JSON.stringify(articleInfo) %>
+            </div>
         </div>
     </div>
 </nav>
@@ -86,22 +80,7 @@
         <%- article.content %>
     </div>
 </div>
-<nav class="navbar navbar-default navbar-fixed-bottom" >
-    <div class="container ">
-        <div class="clearfix text-muted" style="margin: 1em">
-            <p class="text-center" style="font-size: 100%;margin: 0em">
-                <b>
-                    RemarkCall
-                    <a class="glyphicon glyphicon-cloud" href="https://github.com/GargouillePao/remarkcall">
-                    </a>
-                </b>
-            </p>
-            <p class="text-center" style="font-size: 1%;margin: 0em">
-                By Gargouille
-            </p>
-        </div>
-    </div>
-</nav>
+<% include navbottom.ejs %>
 <div id="chat-bar" blink="0" class="chat-bar btn btn-default"
      data-toggle="popover"
      data-placement="bottom"

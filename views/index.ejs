@@ -2,35 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>RemarkCall</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" src="jquery/dist/jquery.js"></script>
     <script type="text/javascript" src="bootstrap/dist/js/bootstrap.js"></script>
     <script type="text/javascript" src="./socket.io/socket.io.js" ></script>
     <link href="bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="./css/article.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript">
-        var socket = io.connect("http://www.gargouilledragon.org:50303");
-        socket.on("getAllOnlineCount",function(msg){
-            $("#online").text(msg.count);
-        });
-    </script>
+    <link href="./css/global.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="./js/navtop.js" ></script>
+    <script type="text/javascript" src="./js/index.js" ></script>
 </head>
 <body>
 
 <nav class="navbar navbar-default">
     <div class="container ">
         <div class="header clearfix">
-            <nav>
-                <ul class="nav nav-pills pull-right">
-                    <li class="navbar-text navbar-right">
-                        online : <span id="online">0</span>
-                    </li>
-                    <li class="navbar-text navbar-right">
-                        visitor : <span id="visitor"><%= user %></span>
-                    </li>
-                </ul>
-            </nav>
+            <% include navtop.ejs %>
             <h3 class="text-muted">RemarkCall</h3>
             <ol class="breadcrumb" style="background: transparent;padding-left: 0em">
                 <li class="active">Home</li>
@@ -40,29 +27,15 @@
 </nav>
 <div class="container">
     <h1 style="font-family: 'Microsoft YaHei'">首页</h1>
-    <div class="list-group">
-        <% articles.foreach(function(article){ %>
-        <a class="list-group-item list-item" article="<%= article.title %>" href="article?index=<%= article.index %>">
-            <%= article.title %>
+    <div class="row">
+        <a class="col-md-4" href="article">
+            文章列表
+            <span class="label label-default">
+                <%- articleInfo.articleCount %>
+            </span>
         </a>
-        <% }) %>
     </div>
 </div>
-<nav class="navbar navbar-default navbar-fixed-bottom" >
-    <div class="container ">
-        <div class="clearfix text-muted" style="margin: 1em">
-            <p class="text-center" style="font-size: 100%;margin: 0em">
-                <b>
-                    RemarkCall
-                    <a class="glyphicon glyphicon-cloud" href="https://github.com/GargouillePao/remarkcall">
-                    </a>
-                </b>
-            </p>
-            <p class="text-center" style="font-size: 1%;margin: 0em">
-                By Gargouille
-            </p>
-        </div>
-    </div>
-</nav>
+<% include navbottom.ejs %>
 </body>
 </html>

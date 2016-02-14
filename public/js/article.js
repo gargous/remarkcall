@@ -20,7 +20,6 @@ function init(){
     differentOfArticle = new diffDOM();
     oldArticleHTML = $("#summernote").html();
     socket = io.connect("http://www.gargouilledragon.org:50303/article"+articleInfo.index);
-
     if(!articleInfo.isAuthor){
         initSummernote(articleInfo.editable);
     }else{
@@ -76,6 +75,7 @@ function initSummernote(editable){
     });
 
     $("#summernote").summernote(editableStr);
+    $("#summernote").summernote("lineHeight", 1);
 }
 
 function handleSocket(){
@@ -130,7 +130,10 @@ function handleSocket(){
             }
         });
     }
-
+    socket.on("getOnlineList",function(msg){
+        onGetOnlineList(msg);
+    });
+    socket.emit("pushUser",{username:articleInfo.visitor});
 }
 
 function sendArticle(contents){
@@ -146,9 +149,22 @@ function sendArticle(contents){
 function handleEditor(editor){
 
     editor.on('summernote.enter', function(ew, event, $editable) {
-        event.preventDefault();
-        console.log(window.getSelection());
-        editor.summernote('insertNode', $("<br />")[0]);
+        if(selectionInSpan("pre")){
+            console.log("!!!!!");
+            event.preventDefault();
+            editor.summernote('insertNode', $("<br />")[0]);
+            var selection = window.getSelection();
+            var nowNode = window.getSelection().focusNode;
+            var nowParent = nowNode.parentNode;
+            var nextIndex = 0;
+            for(var i=0;i<nowParent.childNodes.length;i++){
+                if(nowParent.childNodes[i]==nowNode){
+                    nextIndex = i+2;
+                    break;
+                }
+            }
+            selection.collapse(nowParent,nextIndex);
+        }
     });
     editor.on("summernote.change", function(event, contents, $editable) {
         sendArticle(contents);
@@ -229,17 +245,19 @@ function showFloatingRemark(selectedRange){
 }
 
 function showDialogRemark(selectedRange){
-    var remarkIndex = -1;
-    var remarkTitle = selectedRange.toString();
-    showRemark(remarkTitle,function(remarks){
-        console.log(remarkIndex);
-        socket.emit("writeRemark",{reviewer:articleInfo.visitor,index:remarkIndex,title:remarkTitle,remark:remarks});
-        socket.emit("fetchRemarkCount",{index:remarkIndex});
-        socket.once("newRemark",function(msg){
-            remarkIndex = msg.index;
-            highlight(msg.index,selectedRange);
+    if(!selectionInSpan("pre")){
+        var remarkIndex = -1;
+        var remarkTitle = selectedRange.toString();
+        showRemark(remarkTitle,function(remarks){
+            console.log(remarkIndex);
+            socket.emit("writeRemark",{reviewer:articleInfo.visitor,index:remarkIndex,title:remarkTitle,remark:remarks});
+            socket.emit("fetchRemarkCount",{index:remarkIndex});
+            socket.once("newRemark",function(msg){
+                remarkIndex = msg.index;
+                highlight(msg.index,selectedRange);
+            });
         });
-    });
+    }
 }
 
 function highlight(index,range) {
@@ -264,6 +282,18 @@ function saveArticle(index,content){
         clearTimeout(updateTimer);
         updateTimer = null;
     },2000);
+}
+
+//当前光标是否在某个标签内
+function selectionInSpan(span){
+    var preNodes = $(span).children();
+    var inCodeSpan = false;
+    for(var i=0;i<preNodes.length;i++){
+        if(window.getSelection().containsNode(preNodes[i],true)){
+            inCodeSpan = true;
+        }
+    }
+    return inCodeSpan;
 }
 
 function getSocket(){

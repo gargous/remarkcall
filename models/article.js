@@ -3,22 +3,23 @@
  */
 var fs = require("fs");
 var saveTimer;
-var Remarks = require("./remarks");
+var ArticleInfo = require("./articleInfo");
 var Article = function(){
     this.filePath = remarkcall.getAbsolutePath("/storage/articles/");
     this.title = "";
     this.index = -1;
     this.content = "";
     this.nsp = "";
-    this.remarks = new Remarks();
+    this.articleInfo = new ArticleInfo();
     this.fileName = "";
     this.editable = false;
+    this.createDate;
 };
 Article.prototype.init = function(index){
     this.index = index;
     this.title = "Hello_"+index;
     this.nsp = "/article"+index;
-    this.remarks.init(index);
+    this.articleInfo.init(index);
     this.content = "Hello_"+index;
     this.fileName = this.filePath+this.index+".md";
 };
@@ -47,11 +48,16 @@ Article.prototype.updateTitle = function(){
 };
 Article.prototype.setEditable = function(editable){
     this.editable = editable;
+    this.articleInfo.editable = editable;
+    this.articleInfo.save(3000);
+};
+Article.prototype.isAbleToEdit = function(){
+    return this.articleInfo.editable;
 };
 Article.prototype.remark = function(index,reviewer,title,remark,callback){
     var self = this;
-    self.remarks.append(index,reviewer,title,remark,function(remarkTemp,remarkCount){
-        callback(self.remarks.get(),remarkCount);
+    self.articleInfo.append(index,reviewer,title,remark,function(remarkTemp,remarkCount){
+        callback(self.articleInfo.get(),remarkCount);
     });
 };
 Article.prototype.save = function(timeStamp){

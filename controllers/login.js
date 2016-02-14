@@ -7,7 +7,7 @@ router.get("/", function(req,res){
     if (req.session.sign) {//检查用户是否已经登录
         res.redirect("/index");
     }else{
-        res.render("login");
+        res.render("login",{rootPath:remarkcall.ROOT_PATH});
     }
 });
 router.post("/", function(req,res){

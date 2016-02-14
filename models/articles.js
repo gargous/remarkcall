@@ -10,74 +10,117 @@ var Articles = function(){
     this.filePath = remarkcall.getAbsolutePath("/storage/articles/");
     this.articles = [];
     this.socketAction = function(article){};
+    this.length = 0;
 };
 Articles.prototype.init= function(){
     var fileUtil = require(remarkcall.getAbsolutePath("utils/files"));
     var self = this;
-    if(self.articles.length==0){
-        for(var i=0;i<10;i++){
-            self.add("Hello_"+i,"");
-        }
-    }
     fileUtil.getSubFilesName(this.filePath,function(index,content){
-        fs.readFile(content,'utf-8',function(err,data){
-            if(err){
-                console.log(err);
-                return;
-            }
-            self.updateTitle(index,data,function(title){
-                self.resetArticle(index,title,data);
+        try{
+            fs.readFile(content,'utf-8',function(err,data){
+                if(err){
+                    console.log(err);
+                    return;
+                }
+                self.add(index,"Hello_"+index,"");
+                self.updateTitle(index,data,function(title){
+                    self.resetArticle(index,title,data);
+                });
             });
-        });
+        }catch(e){
+
+        }
     });
 };
-Articles.prototype.add = function(title,content){
-    var index = this.articles.length;
+Articles.prototype.add = function(index_,title,content){
+    var dateNow = new Date();
+    var index = "time-"+
+        dateNow.getYear()+"-"+
+        (dateNow.getMonth()+1)+"-"+
+        dateNow.getDate()+"-"+
+        dateNow.getHours()+"-"+
+        dateNow.getMinutes()+"-"+
+        dateNow.getSeconds();
+    if(index_){
+        index = index_;
+    }
+
     var article = new Article();
     article.init(index);
+    if(title!=""){
+        article.title = title;
+    }
     if(content!=""){
         article.content = content;
     }
-    this.articles.push(article);
+    this.articles[index] = article;
     this.socketAction(article);
+    this.length++;
+};
+Articles.prototype.remove = function(index){
+    if(this.articles[index]){
+        this.length--;
+        delete this.articles[index];
+    }
 };
 Articles.prototype.get = function(index){
-    if(index<this.articles.length && index>=0){
+    if(this.articles[index]){
         return this.articles[index]
     }
 };
 Articles.prototype.updateTitle = function(index,data,callback){
     this.articles[index].updateTitle(data,callback);
 };
+Articles.prototype.getTitles = function(withIndex){
+    var titles=[];
+    this.foreach(function(article){
+        if(withIndex){
+            titles.push({title:article.title,index:article.index});
+        }else{
+            titles.push(article.title);
+        }
+    });
+    return titles;
+};
 Articles.prototype.updateArticle = function(index,content){
-    if(index<this.articles.length && index>=0){
+    if(this.articles[index]){
         this.articles[index].content = content;
         this.save(index,content,5000);
     }
 };
 Articles.prototype.resetArticle = function(index,title,content){
-    if(index<this.articles.length && index>=0){
+    if(this.articles[index]){
         this.articles[index].title = title;
         this.articles[index].content = content;
     }else{
-        this.add(title,content);
+        this.add(index,title,content);
     }
 };
-Articles.prototype.setRemarks = function(index,remarks){
-    if(index<this.articles.length && index>=0){
-        this.articles[index].remarks = remarks;
+Articles.prototype.setArticleInfo = function(index,info){
+    if(this.articles[index]){
+        this.articles[index].articleInfo = info;
     }
 };
-Articles.prototype.getRemarks = function(index){
-    if(index<this.articles.length && index>=0){
-        return this.articles[index].remarks;
+Articles.prototype.getArticleInfo = function(index){
+    if(this.articles[index]){
+        return this.articles[index].articleInfo;
     }
 };
-Articles.prototype.foreach = function(callback){
-    this.articles.forEach(function(article){
-        callback(article);
-    });
+Articles.prototype.foreach = function(){
+    var self = this;
+    switch (arguments.length){
+        case 1:
+            var callback = arguments[0];
+            for(key in self.articles){
+                callback(self.articles[key]);
+            }
+            break;
+        default :
+            break;
+    }
+
 };
+
 Articles.prototype.save = function(index,content,timeStamp){
     var self = this;
     var article = self.get(index);
@@ -86,4 +129,7 @@ Articles.prototype.save = function(index,content,timeStamp){
 };
 Articles.prototype.setSocketAction = function(action){
     this.socketAction = action;
+};
+Articles.prototype.summary = function(){
+    return this.length;
 };

@@ -5,12 +5,15 @@ var express = require('express');
 var router = express.Router();
 
 router.get("/", function(req,res){
-    var session = req.session;
+    //var session = req.session;
     var articles = remarkcall.articles;
+    var mainInfo = {};
+    mainInfo.author = req.session.author;
+    mainInfo.visitor = req.session.name;
+    mainInfo.articleCount = articles.summary();
     res.render("index",{
-        user : session.name,
-        author : session.author,
-        articles : articles
+        articleInfo:mainInfo,
+        rootPath:remarkcall.ROOT_PATH
     });
 });
 router.get("/cookies", function(req,res){

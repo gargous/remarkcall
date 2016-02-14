@@ -2,13 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" src="./jquery/dist/jquery.js"></script>
     <script type="text/javascript" src="./bootstrap/dist/js/bootstrap.js"></script>
-    <script type="text/javascript" src="./js/index.js"></script>
     <link href="./bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="./css/article.css" rel="stylesheet" type="text/css">
+    <link href="./css/global.css" rel="stylesheet" type="text/css">
+    <script>
+        function login(){
+            var username = $('#username').val();
+            var data = { "username": username };
+            $.ajax({
+                url:'login',
+                type:'POST',
+                data:data,
+                success:function(data,status) {
+                    if (status == "success") {
+                        location.href = "index";
+                    }
+                },
+                error:function(data,status,err){
+                    if (status == "error") {
+                        location.href = "login";
+                    }
+                }
+            });
+        }
+    </script>
 </head>
 <body>
 
@@ -25,35 +45,22 @@
         <div class="form-group center-block">
             <label for="username" class="col-md-4 control-label">name</label>
             <div class="col-md-4">
-                <input  type="text" class="form-control " id="username" placeholder="请输入名称">
+                <input  type="text" class="form-control " id="username" placeholder="请输入名称" onkeypress="if(event.keyCode==13) {login()}">
             </div>
 
         </div>
         <div class="form-group center-block">
             <label class="col-md-4 control-label"></label>
             <div class="col-md-4">
-                <input type="button" class="btn btn-primary col-md-4" value="login" onclick="login()" />
+                <a class="btn btn-primary col-md-4"  onclick="login()" />
+                Login
+                </a>
             </div>
         </div>
 
     </form>
 </div>
 
-<nav class="navbar navbar-default navbar-fixed-bottom" >
-    <div class="container ">
-        <div class="clearfix text-muted" style="margin: 1em">
-            <p class="text-center" style="font-size: 100%;margin: 0em">
-                <b>
-                    RemarkCall
-                    <a class="glyphicon glyphicon-cloud" href="https://github.com/GargouillePao/remarkcall">
-                    </a>
-                </b>
-            </p>
-            <p class="text-center" style="font-size: 1%;margin: 0em">
-                By Gargouille
-            </p>
-        </div>
-    </div>
-</nav>
+<% include navbottom.ejs %>
 </body>
 </html>

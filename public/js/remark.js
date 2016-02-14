@@ -38,9 +38,9 @@ function appendHighlight(selectedRange,index,clickEvent){
     });
     $(span).on('shown.bs.popover', function () {
         var popover = $(this);
-        var remarks = "";
+        var articleInfo = "";
         popover.on("remark",function(event,reviewer,title,remark){
-            remarks = "";
+            articleInfo = "";
             console.log("remark",remark);
             if(title==remarkTitle){
                 var content = popover.attr("content")+appendRemark(reviewer,remark);
@@ -59,10 +59,10 @@ function appendHighlight(selectedRange,index,clickEvent){
         });
         popover.find(".note-editable").html("");
         popover.find("#remark-summernote").on("summernote.change",function(event, contents, $editable){
-            remarks = contents;
+            articleInfo = contents;
         });
         popover.find("#remarkSubmit").on("click",function(event){
-            callback(remarks);
+            callback(articleInfo);
         });
     });
     */
@@ -98,8 +98,10 @@ function showRemark(remarkTitle,callback){
     modalDialog.on("show.bs.modal", function (event) {
         var modal = $(this);
         var remarks = "";
+        var oldRemarks = "";
         modal.on("remark",function(event,reviewer,title,remark){
             remarks = "";
+            oldRemarks = "";
             console.log("remark",remark);
             if(title==remarkTitle){
                 modal.find(".modal-body").append(appendRemark(reviewer,remark));
@@ -123,7 +125,10 @@ function showRemark(remarkTitle,callback){
             remarks = contents;
         });
         modal.find("#remarkSubmit").on("click",function(event){
-            callback(remarks);
+            if(remarks != oldRemarks){
+                callback(remarks);
+                oldRemarks = remarks;
+            }
         });
     });
     modalDialog.modal('show');
