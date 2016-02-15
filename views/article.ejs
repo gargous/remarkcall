@@ -30,7 +30,7 @@
     <title>RemarkCall Article:<%- article.title %></title>
     <script>
         $(function () { $("[data-toggle='tooltip']").tooltip(); });
-        $(function () {$('[data-toggle="popover"]').popover()})
+        $(function () {$('[data-toggle="popover"]').popover()});
     </script>
 </head>
 <body>
@@ -81,52 +81,17 @@
     </div>
 </div>
 <% include navbottom.ejs %>
-<div id="chat-bar" blink="0" class="chat-bar btn btn-default"
-     data-toggle="popover"
-     data-placement="bottom"
-     data-title="Chatting"
-     data-template="
-             <div class='popover chat-popover' role='tooltip'>
-                <div class='arrow'>
-                </div>
-                <h3 class='popover-title'>
-                Popover title
-                </h3>
-                <div class='chat-content-wrapper'>
-                    <ul class='popover-content list-group chat-content'>
-                    </ul>
-                </div>
-
-                <div class='chat-area'>
-                    <div class='chat-area-inner'>
-                        <div id='chat-note' class='chat-note'></div>
-                    </div>
-                    <div id='chat-summit' class='btn btn-success btn-block'>提交</div>
-                </div>
-             </div>
-             "
-     data-html="true"
-     data-content="">
-    <b>chat</b>
-</div>
-<div id="remarkFloat" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-sm"  aria-hidden="true">
-        <div class="modal-content">
-            <div class="modal-header">
-                <a class="close" data-dismiss="modal">×</a>
-                <h3 style="margin: 0em">This is a Modal Heading</h3>
-            </div>
-            <ul class="modal-body list-group">
-            </ul>
-            <div class="page-header" style="margin-bottom: 0em"></div>
-            <div class="chat-area ">
-                <div class="chat-area-inner">
-                    <div id="remarkNote"></div>
-                </div>
-                <a href="#" id="remarkSubmit" class="btn btn-success btn-block">评论!</a>
-            </div>
-        </div>
+<div class="chat-bar-wrapper" data-toggle="tooltip" data-placement="top" title="Chatting!">
+    <div id="chat-bar" class=" chat-bar btn btn-default"
+         data-toggle="popover"
+         data-placement="bottom"
+         data-title="Chatting"
+         data-template="<% include popoverListView.ejs %>"
+         data-html="true"
+         data-content="">
+        <b>chat</b>
     </div>
 </div>
+<% include remarkListView.ejs %>
 </body>
 </html>

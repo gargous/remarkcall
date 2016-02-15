@@ -107,6 +107,14 @@ function handleSocket(){
             var $elem = $(elem);
             if($elem.attr("remark-index")==msg.index){
                 $elem.attr("remark-count",msg.remarkCount);
+                if(msg.remarkCount>1){
+                    $elem.attr("title",msg.remarkCount+" remarks");
+                }else{
+                    $elem.attr("title",msg.remarkCount+" remark");
+                }
+                $elem.attr("data-toggle","tooltip");
+                $elem.attr("data-placement","top");
+                $elem.tooltip();
             }
         });
     });

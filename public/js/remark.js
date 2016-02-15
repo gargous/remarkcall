@@ -8,6 +8,8 @@ function appendHighlight(selectedRange,index,clickEvent){
     span.className = "remark";
     span.appendChild(selectedText);
     span.setAttribute("title","remark");
+    span.setAttribute("data-toggle","tooltip");
+    span.setAttribute("data-placement","top");
     span.setAttribute("remark-index",index);
     span.setAttribute("remark-count",1);
     span.onclick = clickEvent;
@@ -70,17 +72,20 @@ function appendHighlight(selectedRange,index,clickEvent){
 }
 
 function appendRemark(reviewer,remark){
-    var remarkItem = document.createElement("li");
+    var remarkItem = document.createElement("div");
     var reviewerSpan = document.createElement("div");
     var remarkSpan = document.createElement("div");
+    var remarkWrap = document.createElement("li");
     reviewerSpan.className = "remarkReviewer";
     reviewerSpan.innerHTML = "<b>"+reviewer+"</b>";
     remarkSpan.className = "remarkContent";
     remarkSpan.innerHTML = remark;
-    remarkItem.className = "remarkItem list-group-item";
+    remarkItem.className = "list-item";
     remarkItem.appendChild(reviewerSpan);
     remarkItem.appendChild(remarkSpan);
-    return remarkItem;
+    remarkWrap.className = "list-item-wrapper list-group-item remarkItem";
+    remarkWrap.appendChild(remarkItem);
+    return remarkWrap;
 }
 
 function showRemark(remarkTitle,callback){
@@ -107,11 +112,13 @@ function showRemark(remarkTitle,callback){
                 oldRemarks = "";
                 console.log("remark",remark);
                 if(title==remarkTitle){
-                    modal.find(".modal-body").append(appendRemark(reviewer,remark));
+                    var modalBody = modal.find(".modal-body");
+                    modalBody.append(appendRemark(reviewer,remark));
+                    modalBody[0].scrollTop = modalBody[0].scrollHeight;
                 }
             }
         });
-        modal.find(".modal-header").find("h3").text("Remark:" + remarkTitle);
+        modal.find(".modal-header").find("h3").text("评论：" + remarkTitle);
         var popup = [
             ['style', ['fontsize','bold','color', 'italic', 'underline', 'clear']],
             ['font', ['strikethrough', 'superscript', 'subscript']]

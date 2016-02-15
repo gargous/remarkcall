@@ -3,18 +3,19 @@
  */
 $(document).on("ready",function(){
     var chatBarOldCss ={};
-    chatBarOldCss["background"] = "#5e5e5e";
     chatBarOldCss["box-shadow"] = "0px 0px 0px #888888";
     var chatBarNewCss ={};
-    chatBarNewCss["background"] = "#6e6e6e";
     chatBarNewCss["box-shadow"] = "0px 0px 20px #888888";
 
     var chatContent = $("<ul></ul>");
+    var newCommunicationsCount = 0;
     //console.log(chatBarCss);
     $("#chat-bar").on("shown.bs.popover",function(){
         setTimeout(function(){
-            $("#chat-bar").css(chatBarOldCss);
-        },1000);
+            var scrollView = $(".chat-popover").find(".chat-content");
+            updateChattingBar(0,chatBarOldCss);
+            scrollView[0].scrollTop = scrollView[0].scrollHeight;
+        },300);
         var chatSummit = $("#chat-summit");
         var summerNote = $("#chat-note");
         $(".chat-popover").find(".popover-content").html(chatContent.html());
@@ -34,7 +35,7 @@ $(document).on("ready",function(){
         var content = "";
         var contentOld = "";
         var dateOld = new Date();
-        //summerNote.summernote('lineHeight', 1.5);
+
         summerNote.on("summernote.change",function(event, contents, $editable){
             content = contents;
         });
@@ -59,9 +60,11 @@ $(document).on("ready",function(){
         var summerNote = $("#chat-note");
         chatSummit.off("click");
         summerNote.off("summernote.change");
+        newCommunicationsCount = 0;
     });
 
     getSocket().on("getChatMsg",function(msg){
+        newCommunicationsCount++;
         chatContent.append(appendRemark(msg.name,msg.content));
         //console.log(chatContent);
         if($(".chat-popover").find(".popover-content")){
@@ -71,7 +74,20 @@ $(document).on("ready",function(){
         if(scrollView[0]){
             scrollView[0].scrollTop = scrollView[0].scrollHeight;
         }else{
-            $("#chat-bar").css(chatBarNewCss);
+            updateChattingBar(newCommunicationsCount,chatBarNewCss)
         }
     })
 });
+
+function updateChattingBar(count,newCSS){
+    if(count>0){
+        $("#chat-bar").css(newCSS);
+        $("#chat-bar").parent().attr("title","new "+count+" communication");
+        $("#chat-bar").parent().attr("data-original-title","new "+count+" communication");
+        $("#chat-bar").parent().tooltip("show");
+    }else{
+        $("#chat-bar").css(newCSS);
+        $("#chat-bar").parent().attr("title","Chatting!");
+        $("#chat-bar").parent().attr("data-original-title","Chatting!");
+    }
+}

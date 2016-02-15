@@ -22,10 +22,10 @@
     text-align: center;
     line-height: 1.3em;
     margin-left: 0.5em;
-    width: 1.55em;
-    height: 1.5em;
+    width: 1.45em;
+    height: 1.4em;
     color: white;
-    font-size: 2pt;
+    font-size: small;
     transition: all 0.5s;
     -moz-transition: all 0.5s; /* Firefox 4 */
     -webkit-transition: all 0.5s; /* Safari ºÍ Chrome */
@@ -72,6 +72,11 @@
 .remarkItem{
     vertical-align: middle;
     overflow:hidden;
+    padding: 0em;
+}
+.remark-wrapper{
+    width: 20.5em;
+    margin: 1em;
 }
 
 .visitor{

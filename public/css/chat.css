@@ -1,13 +1,22 @@
 .chat-note{
 }
 
+.chat-bar-wrapper{
+     float: right;
+     margin-top: 6.5em;
+
+}
+.chat-bar-wrapper{
+    position: absolute;
+    top: 0em;
+    right: 13%
+}
 .chat-bar{
     width: 3em;
     height: 3em;
     background: #5e5e5e;
 
-    float: right;
-    margin-top: 6.5em;
+
     border: 0.2em solid #5e5e5e;
     border-radius: 100%;
 
@@ -28,15 +37,9 @@
     background: white;
     color: #cecece;
 }
-.chat-bar{
-    position: absolute;
-    top: 0em;
-    right: 13%
-}
 
 .chat-area{
     padding: 1em;
-
 }
 .chat-area-inner{
     margin-bottom: 1em;
@@ -47,12 +50,15 @@
 
 }
 .chat-content{
-    width: 19em;
-    height: 16em;
+    box-shadow: 0pt 0.8pt 3pt #d8d8d8;
+    width: 95%;
+    height: 18em;
     overflow-y: scroll;
     overflow-x: hidden;
 }
 .chat-content-wrapper{
-    width: 24em;
+    margin: 1em;
+    width: 18em;
+
 }
 

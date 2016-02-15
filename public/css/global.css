@@ -1,0 +1,102 @@
+a {
+    color:#b38090;
+    transition: all 0.5s ;
+    -moz-transition: all 0.5s; /* Firefox 4 */
+    -webkit-transition: all 0.5s; /* Safari 和 Chrome */
+    -o-transition: all 0.5s; /* Opera */
+}
+a:hover{
+    color:#f38020;
+    text-decoration: none;
+}
+body { padding-bottom: 35%; }
+
+.list-item-wrapper{
+    box-shadow: 0pt 0.8pt 3pt #d8d8d8;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    border: 0em;
+    border-radius: 0em;
+}
+.list-item {
+    overflow: hidden;
+    transition: all 0.5s;
+    -moz-transition: all 0.5s; /* Firefox 4 */
+    -webkit-transition: all 0.5s; /* Safari 和 Chrome */
+    -o-transition: all 0.5s; /* Opera */
+
+
+    width: 100%;
+    display: block;
+
+    padding: 0.5em;
+    padding-left: 1em;
+
+    transform-style: preserve-3d;
+    -webkit-transform-style:preserve-3d;
+    -moz-transform-style:preserve-3d;
+    -o-transform-style:preserve-3d;
+    -ms-transform-style:preserve-3d;
+
+    perspective: 2000px;
+    -webkit-perspective:2000px;
+    -moz-perspective:2000px;
+    -o-perspective:2000px;
+    -ms-perspective:2000px;
+
+    transform-origin: top;
+    -webkit-transform-origin: top;
+    -moz-transform-origin: top;
+    -o-transform-origin: top;
+    -ms-transform-origin: top;
+
+
+}
+.list-item:before{
+    opacity: 0;
+    background: orange;
+    border: 0.1em solid orange;
+    border-radius: 100%;
+    height: 400%;
+    width: 0em;
+    content: "";
+    position: absolute;
+    text-align: center;
+    left: -10em;
+    top: -150%;
+    display: block;
+
+    transition: all 0.5s;
+    -moz-transition: all 0.5s; /* Firefox 4 */
+    -webkit-transition: all 0.5s; /* Safari 和 Chrome */
+    -o-transition: all 0.5s; /* Opera */
+}
+.list-item:hover{
+    padding-left: 2em;
+    transform:translateZ(200px) rotateX(1deg);
+    -ms-transform:translateZ(200px) rotateX(1deg); 	/* IE 9 */
+    -moz-transform:translateZ(200px) rotateX(1deg); 	/* Firefox */
+    -webkit-transform:translateZ(200px) rotateX(1deg); /* Safari 和 Chrome */
+    -o-transform:translateZ(200px) rotateX(1deg);
+}
+
+.list-item:hover:before{
+    opacity: 1;
+    width: 11.5em;
+}
+.list-item:active:before{
+    opacity: 0;
+    background: white;
+    width: 3em;
+}
+
+.btn-round{
+    width: 2em;
+    height: 2em;
+    line-height: 1.8em;
+    padding: 0em;
+    background: #ff3030;
+    border: 0.2em solid #ff3030;
+    border-radius: 100%;
+    box-shadow: 0px 1px 5px #888888;
+}
