@@ -8,10 +8,10 @@
 .remark:hover{
     color:white;
     background: orangered;
-    border: 0.1em solid orangered;
+    border: 0.0001em solid orangered;
     padding-left: 0.3em;
     padding-right: 0.3em;
-    border-radius: 0.8em;
+    border-radius: 0.5em;
 }
 .remark:after{
     float:right;
