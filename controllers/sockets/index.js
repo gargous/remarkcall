@@ -13,13 +13,13 @@ SocketController.prototype.initConnection = function(nsp){
 }
 SocketController.prototype.handleConnection = function(handleSocketEnter,handleSocketQuit){
     var self = this;
-    this.nsp.on("connection",function(socket){
+    self.nsp.on("connection",function(socket){
         var username;
         socket.on('pushUser', function (msg) {
             console.log(msg.username,"login");
             username = msg.username;
             handleSocketEnter(self.allOnlineList,self.allOutlineList,username,socket);
-            nsp.emit("getAllOnlineCount",{count:self.allOnlineList.getLength()});
+            self.nsp.emit("getAllOnlineCount",{count:self.allOnlineList.getLength()});
         });
         socket.on('fetchOnlineList', function (msg) {
             var usernameList = self.allOnlineList.getUserList();
@@ -27,18 +27,18 @@ SocketController.prototype.handleConnection = function(handleSocketEnter,handleS
         });
         socket.on("addArticle",function(msg){
             msg.flag = true;
-            remarkcall.articles.add(false,"пбндуб "+remarkcall.articles.summary(),"");
-            nsp.emit("newArticle",msg);
+            remarkcall.articles.add(false,"О©╫О©╫О©╫О©╫О©╫О©╫ "+remarkcall.articles.summary(),"");
+            self.nsp.emit("newArticle",msg);
         });
         socket.on("removeArticle",function(msg){
             msg.flag = true;
             //var page = msg.page;
             remarkcall.articles.remove(msg.index);
-            nsp.emit("newArticle",msg);
+            self.nsp.emit("newArticle",msg);
         });
         socket.on("disconnect", function () {
             handleSocketQuit(self.allOnlineList,self.allOutlineList,username,socket);
-            nsp.emit("getAllOnlineCount",{count:self.allOnlineList.getLength()});
+            self.nsp.emit("getAllOnlineCount",{count:self.allOnlineList.getLength()});
         });
     });
 }

@@ -3,7 +3,7 @@
  */
 var socket;
 $(document).on("ready",function(){
-    socket = io.connect("http://www.gargouilledragon.org:50303");
+    socket = io.connect(getAddr());
     socket.on("getAllOnlineCount",function(msg){
         console.log(msg);
         $("#online").text(msg.count);

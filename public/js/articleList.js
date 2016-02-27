@@ -5,7 +5,7 @@ var socket;
 var articleInfo;
 $(document).on("ready",function(){
     articleInfo = JSON.parse($("#articleInfo").html());
-    socket = io.connect("http://www.gargouilledragon.org:50303");
+    socket = io.connect(getAddr());
     socket.on("getAllOnlineCount",function(msg){
         $("#online").text(msg.count);
     });
