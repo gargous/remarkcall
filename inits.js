@@ -1,18 +1,19 @@
 /**
  * Created by qs on 2016/1/22.
  */
+var path = require("path");
 module.exports = function(app){
     return new Initializer(app);
 };
 var Initializer = function(app){
     this.app = app;
     this.port = 80;
-    this.routesPath = remarkcall.getAbsolutePath("controllers/routes");
-    this.multerPath = remarkcall.getAbsolutePath("uploads");
-    this.viewPath = remarkcall.getAbsolutePath("views");
+    this.routesPath = path.resolve("controllers","routes");
+    this.multerPath = path.resolve("uploads");
+    this.viewPath = path.resolve("views");
     this.staticsPathes = [
-        remarkcall.getAbsolutePath("public"),
-        remarkcall.getAbsolutePath("bower_components")
+        path.resolve("public"),
+        path.resolve("bower_components")
     ];
     this.timeStampForSavingArticle = 2000;
     this.timeStampForSavingRemarks = 2000;
@@ -44,7 +45,7 @@ Initializer.prototype.initRoutes = function(){
     var bodyParser = require("body-parser");
     var multer = require("multer");
     var self = this;
-    var fileUtil = require(remarkcall.getAbsolutePath("/utils/files"));
+    var fileUtil = require(path.resolve("utils","files"));
     self.app.use(bodyParser.json());
     self.app.use(bodyParser.urlencoded({extended:true}));
     self.app.use(multer({ dest: self.multerPath}));
@@ -73,7 +74,7 @@ Initializer.prototype.initStaticFiles = function(){
     };
 };
 Initializer.prototype.initSessionControl = function(secretLength,expireMinute){
-    var basicsUtil = require(remarkcall.getAbsolutePath("/utils/basics"));
+    var basicsUtil = require(path.resolve("utils","basics"));
     var cookieParser = require("cookie-parser");
     var session = require("express-session");
     this.app.use(cookieParser());
@@ -97,16 +98,13 @@ Initializer.prototype.initSessionControl = function(secretLength,expireMinute){
     });
 };
 Initializer.prototype.initModels = function(){
-    remarkcall.articles = require(remarkcall.getAbsolutePath("/models/articles"))();
-    remarkcall.articles.foreach(function(data,index){
-        remarkcall.articles.setArticleInfo(index,require(remarkcall.getAbsolutePath("/models/articleInfo"))())
-    });
-    remarkcall.SocketList = require(remarkcall.getAbsolutePath("/models/socketList"));
+    remarkcall.articles = require(path.resolve("models","articles"))();
+    remarkcall.SocketList = require(path.resolve("models","socketList"));
 };
 Initializer.prototype.initSocketIO = function(http){
     var io = require("socket.io")(http);
-    var ioIndex = require(remarkcall.getAbsolutePath("controllers/sockets/index"))();
-    var ioArticle = require(remarkcall.getAbsolutePath("controllers/sockets/article"))();
+    var ioIndex = require(path.resolve("controllers","sockets","index"))();
+    var ioArticle = require(path.resolve("controllers","sockets","article"))();
 
     var self = this;
 

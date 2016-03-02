@@ -90,7 +90,11 @@ SocketController.prototype.handleConnection = function(handleSocketEnter,handleS
             }else{
                 self.article.setEditable(false);
             }
-            self.article.updateTitle();
+            self.article.updateTitle("",msg.title,function(){
+                self.article.articleInfo.title = msg.title;
+                console.log(self.article.articleInfo.title);
+                self.article.articleInfo.save(self.timeStampForSavingRemarks);
+            });
             socket.broadcast.emit("getEditInfo", msg);
         });
         socket.on("pushChatMsg",function(msg){

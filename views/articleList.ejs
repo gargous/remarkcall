@@ -42,7 +42,7 @@
             <% for(var i = 0;i < articlesTitle.length;i++){ %>
                 <div class="list-item-wrapper ">
                     <a class="list-item" article="<%= articlesTitle[i].title %>" href="article/single?index=<%= articlesTitle[i].index %>">
-                        <%= articlesTitle[i].title %>
+                        <%- articlesTitle[i].title %>
                     </a>
                 </div>
             <% if(articleInfo.isAuthor){%>

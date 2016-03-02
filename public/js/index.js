@@ -3,7 +3,7 @@
  */
 var socket;
 $(document).on("ready",function(){
-    socket = io.connect(getAddr());
+    socket = io.connect(getSocketAddress());
     socket.on("getAllOnlineCount",function(msg){
         console.log(msg);
         $("#online").text(msg.count);

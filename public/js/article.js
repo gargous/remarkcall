@@ -19,7 +19,7 @@ $(document).on("ready",function(){
 function init(){
     differentOfArticle = new diffDOM();
     oldArticleHTML = $("#summernote").html();
-    socket = io.connect(getAddr()+"/article"+articleInfo.index);
+    socket = io.connect(getSocketAddress()+"/article"+articleInfo.index);
     if(!articleInfo.isAuthor){
         console.log(articleInfo.editable);
         initSummernote(articleInfo.editable);
@@ -29,6 +29,7 @@ function init(){
     }
     initRemarks();
     //if(isAuthor)
+    initNavContext();
 }
 
 function initRemarks (){
@@ -48,11 +49,11 @@ function initSummernote(editable){
     if(editable){
         popup = {
             air: [
-                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['style', ['bold', 'italic', 'underline', 'clear','style']],
                 ['font', ['strikethrough', 'superscript', 'subscript']],
                 ['fontsize', ['fontsize']],
                 ['color', ['color']],
-                ['insert', ['round']],
+                ['insert', ['label','round']],
                 ['para', ['ul', 'ol', 'paragraph']],
                 ['height', ['height']],
                 ['highlight', ['highlight']],
@@ -132,7 +133,7 @@ function handleSocket(){
     }else{
         $("#editCheckbox").on("click",function(event){
             var editable = this.checked;
-            socket.emit("pushEditInfo",{editable:editable});
+            socket.emit("pushEditInfo",{editable:editable,title:$("h1")[0].innerHTML});
             if(editable){
                 $("#editLabel").text("允许编辑");
             }else{
@@ -157,7 +158,6 @@ function sendArticle(contents){
 }
 
 function handleEditor(editor){
-
     editor.on('summernote.enter', function(ew, event, $editable) {
         if(selectionInSpan("pre")){
             console.log("!!!!!");

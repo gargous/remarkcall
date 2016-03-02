@@ -5,15 +5,15 @@ module.exports = function(){
     return new Articles();
 };
 var fs = require("fs");
-var Article = require("./article");
+var path = require("path");
 var Articles = function(){
-    this.filePath = remarkcall.getAbsolutePath("/storage/articles/");
+    this.filePath = path.resolve("storage","articles");
     this.articles = [];
     this.socketAction = function(article){};
     this.length = 0;
 };
-Articles.prototype.init= function(){
-    var fileUtil = require(remarkcall.getAbsolutePath("utils/files"));
+Articles.prototype.init = function(callback){
+    var fileUtil = require(path.resolve("utils","files"));
     var self = this;
     fileUtil.getSubFilesName(this.filePath,function(index,content){
         try{
@@ -22,17 +22,14 @@ Articles.prototype.init= function(){
                     console.log(err);
                     return;
                 }
-                self.add(index,"Hello_"+index,"");
-                self.updateTitle(index,data,function(title){
-                    self.resetArticle(index,title,data);
-                });
+                self.add(index,"Hello_"+index,data,callback);
             });
         }catch(e){
 
         }
     });
 };
-Articles.prototype.add = function(index_,title,content){
+Articles.prototype.add = function(index_,title,content,callback){
     var dateNow = new Date();
     var index = "time-"+
         dateNow.getYear()+"-"+
@@ -45,17 +42,25 @@ Articles.prototype.add = function(index_,title,content){
         index = index_;
     }
 
+    var self = this;
+    var Article = require("./article");
     var article = new Article();
-    article.init(index);
-    if(title!=""){
-        article.title = title;
-    }
-    if(content!=""){
-        article.content = content;
-    }
-    this.articles[index] = article;
-    this.socketAction(article);
-    this.length++;
+    article.init(index,function(thisArticle){
+        thisArticle.articleInfo.init(index,function(articleInfo){
+            console.log(articleInfo.title);
+            thisArticle.title = articleInfo.title;
+        });
+        if(title!=""){
+            article.title = title;
+        }
+        if(content!=""){
+            article.content = content;
+        }
+        self.articles[index] = article;
+        self.socketAction(article);
+        self.length++;
+        callback(article);
+    });
 };
 Articles.prototype.remove = function(index){
     if(this.articles[index]){
@@ -68,8 +73,8 @@ Articles.prototype.get = function(index){
         return this.articles[index]
     }
 };
-Articles.prototype.updateTitle = function(index,data,callback){
-    this.articles[index].updateTitle(data,callback);
+Articles.prototype.updateTitle = function(index,title,callback){
+    this.articles[index].updateTitle("",title,callback);
 };
 Articles.prototype.getTitles = function(withIndex){
     var titles=[];

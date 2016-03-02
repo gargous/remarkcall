@@ -2,10 +2,11 @@
  * Created by qs on 2016/2/6.
  */
 var fs = require("fs");
+var path = require("path");
 var saveTimer;
 var ArticleInfo = require("./articleInfo");
 var Article = function(){
-    this.filePath = remarkcall.getAbsolutePath("/storage/articles/");
+    this.filePath = path.resolve("storage","articles");
     this.title = "";
     this.index = -1;
     this.content = "";
@@ -15,13 +16,14 @@ var Article = function(){
     this.editable = false;
     this.createDate;
 };
-Article.prototype.init = function(index){
-    this.index = index;
-    this.title = "Hello_"+index;
-    this.nsp = "/article"+index;
-    this.articleInfo.init(index);
-    this.content = "Hello_"+index;
-    this.fileName = this.filePath+this.index+".md";
+Article.prototype.init = function(index,callback){
+    var self = this;
+    self.index = index;
+    self.title = "Hello_"+index;
+    self.nsp = "/article"+index;
+    self.content = "Hello_"+index;
+    self.fileName = path.join(self.filePath,self.index+".md");
+    callback(self);
 };
 Article.prototype.updateTitle = function(){
     var self = this;
@@ -32,6 +34,14 @@ Article.prototype.updateTitle = function(){
     }
     if(arguments.length>1){
         data = arguments[0];
+    }
+    if(arguments.length>2){
+        data = arguments[0];
+        var title = arguments[1];
+        self.title = title;
+        self.articleInfo.title = title;
+        console.log("title",self.articleInfo.title);
+        return;
     }
     var datalines = data.substr(0,100).replace(/<[^>]+>/g,",");
     datalines = datalines.split(",");

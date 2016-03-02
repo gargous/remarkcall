@@ -91,4 +91,15 @@
     padding: 0.5em;
 }
 
+.context-wrapper{
+    position: fixed;
+    top: 23%;
+    width: 15%;
+    right: 3%;
+    text-align: center;
+}
+.article-wrapper{
+    width: 82%;
+}
+
 

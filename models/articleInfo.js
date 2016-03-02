@@ -2,19 +2,21 @@
  * Created by qs on 2016/2/6.
  */
 var fs = require("fs");
+var path = require("path");
 var saveTimer;
 var ArticleInfo = function(){
     this.remarks = [];
     this.index = -1;
     this.createDate;
     this.visitCount;
-    this.editable;
-    this.filePath = remarkcall.getAbsolutePath("/storage/articleInfo/");
+    this.editable = false;
+    this.title = "";
+    this.filePath = path.resolve("storage","articleInfo");
 };
-ArticleInfo.prototype.init= function(index){
+ArticleInfo.prototype.init= function(index,callback){
     var self = this;
     self.index = index;
-    self.filePath = remarkcall.getAbsolutePath("/storage/articleInfo/")+self.index+".json";
+    self.filePath = path.resolve("storage","articleInfo",self.index+".json");
     fs.readFile(self.filePath,'utf-8',function(err,data){
         if(err){
             console.log(err);
@@ -25,6 +27,7 @@ ArticleInfo.prototype.init= function(index){
             return;
         }
         var articleInfo = JSON.parse(data);
+        self.title = articleInfo["title"];
         self.createDate = articleInfo["createDate"];
         self.visitCount = articleInfo["visitCount"];
         self.remarks = articleInfo["remarks"];
@@ -37,6 +40,10 @@ ArticleInfo.prototype.init= function(index){
         }
         if(!self.remarks){
             self.remarks = [];
+        }
+        console.log(self);
+        if(self.title){
+            callback(self);
         }
     });
 };
@@ -111,6 +118,7 @@ ArticleInfo.prototype.save = function(timeStamp){
     clearTimeout(saveTimer);
     var self = this;
     saveTimer = setTimeout(function(){
+        console.log(self);
         fs.writeFile(self.filePath,JSON.stringify(self),{encoding:"utf-8"},function (err) {
             if (err) {
                 console.log(err);

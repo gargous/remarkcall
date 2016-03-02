@@ -27,7 +27,9 @@ SocketController.prototype.handleConnection = function(handleSocketEnter,handleS
         });
         socket.on("addArticle",function(msg){
             msg.flag = true;
-            remarkcall.articles.add(false,"������ "+remarkcall.articles.summary(),"");
+            remarkcall.articles.add(false,"新建文档 "+remarkcall.articles.summary(),"",function(){
+
+            });
             self.nsp.emit("newArticle",msg);
         });
         socket.on("removeArticle",function(msg){

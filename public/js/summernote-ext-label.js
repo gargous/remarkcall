@@ -1,5 +1,5 @@
 /**
- * Created by qs on 2016/1/28.
+ * Created by qs on 2016/2/29.
  */
 (function (factory) {
     /* global define */
@@ -15,30 +15,27 @@
     }
 }(function ($) {
     $.extend($.summernote.plugins, {
-        'round': function (context) {
+        'label': function (context) {
             var self = this;
             var ui = $.summernote.ui;
-            context.memo('button.round', function () {
+            context.memo('button.label', function () {
                 var button = ui.button({
-                    contents: 'Remark',
-                    tooltip: 'Remark',
+                    contents: 'Label',
+                    tooltip: 'Label',
                     click: function () {
-                        self.show("#ffc520");
+                        self.show();
                     }
                 });
                 var $round = button.render();
                 return $round;
             });
 
-            this.show = function(color){
-                gotTheSameRemark(function(got,selection){
-                    if(got){
-                        showFloatingRemark(selection);
-                    }else{
-                        showDialogRemark(selection);
-                    }
-                });
-                context.triggerEvent('dialog.shown');
+            this.show = function(){
+                var node = document.createElement("label");
+                node.className = "label label-info";
+                node.innerHTML = context.invoke("editor.createRange").toString();
+                context.invoke("editor.insertNode", node);
+                context.invoke("editor.insertText", " _ ");
             };
         }
     });

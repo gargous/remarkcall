@@ -1,7 +1,7 @@
 /**
  * Created by qs on 2016/2/28.
  */
-function getAddr(){
+function getSocketAddress(){
     return "http://localhost";
-    //return "http://www.gargouilledragon.org:50303";
+    //return "http://www.gargouilledragon.org";
 }

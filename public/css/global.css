@@ -9,7 +9,10 @@ a:hover{
     color:#f38020;
     text-decoration: none;
 }
-body { padding-bottom: 35%; }
+body {
+    padding-bottom: 35%;
+    position: relative;
+}
 
 .list-item-wrapper{
     box-shadow: 0pt 0.8pt 3pt #d8d8d8;

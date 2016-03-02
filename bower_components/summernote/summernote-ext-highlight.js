@@ -46,7 +46,7 @@
                 var $select = $('<select class="form-control ext-highlight-select" />');
                 //var $button = $('<div class="form-control ext-highlight-btn" />');
 
-                var languages = ['nil',
+                var languages = ['nil','pseudo',
                     'c', 'click', 'cpp', 'csharp', 'css', 'elixir', 'erlang', 'htm', 'html',
                     'java', 'javascript', 'glsl', 'go', 'processing', 'python', 'ruby',
                     'scala'

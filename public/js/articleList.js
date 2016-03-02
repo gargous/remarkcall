@@ -5,7 +5,7 @@ var socket;
 var articleInfo;
 $(document).on("ready",function(){
     articleInfo = JSON.parse($("#articleInfo").html());
-    socket = io.connect(getAddr());
+    socket = io.connect(getSocketAddress());
     socket.on("getAllOnlineCount",function(msg){
         $("#online").text(msg.count);
     });
