@@ -86,6 +86,7 @@ function handleSocket(){
     });
     socket.on("writeArticle",function(msg){
         differentOfArticle.apply($(".note-editable")[0], JSON.parse(msg));
+        updateWordCount();
         $(".note-editable").find(".remark").on("click",function() {
             showFloatingRemark($(this));
         });
@@ -147,6 +148,10 @@ function handleSocket(){
     socket.emit("pushUser",{username:articleInfo.visitor});
 }
 
+function updateWordCount(contents){
+    $("#word-count").text($($(".note-editable")[0]).text().length+"字");
+}
+
 function sendArticle(contents){
     if(contents!=oldArticleHTML){
         var different = getHtmlDiff(contents,oldArticleHTML,differentOfArticle);
@@ -158,6 +163,7 @@ function sendArticle(contents){
 }
 
 function handleEditor(editor){
+    updateWordCount();
     editor.on('summernote.enter', function(ew, event, $editable) {
         if(selectionInSpan("pre")){
             console.log("!!!!!");
@@ -177,6 +183,7 @@ function handleEditor(editor){
         }
     });
     editor.on("summernote.change", function(event, contents, $editable) {
+        updateWordCount(contents);
         sendArticle(contents);
     });
 }

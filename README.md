@@ -19,4 +19,4 @@
 - 文章内容(正在写。。。)
   - [粗译MapReduce](https://github.com/GargouillePao/remarkcall/blob/master/storage/articles/time-116-2-29-12-38-27.md)
 
-[博客地址(现在可以聊天，正在写文章。。。)](http://www.gargouilledragon.org:50303/)
+[博客地址(现在可以聊天，正在写文章。。。)](http://www.gargouilledragon.org/)

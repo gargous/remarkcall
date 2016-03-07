@@ -4,6 +4,7 @@
     <file url="file://$PROJECT_DIR$/inits.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/public/js/article.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/public/js/remark.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/views/navbottom.ejs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/views/popoverListView.ejs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/views/remarkListView.ejs" charset="UTF-8" />
   </component>
