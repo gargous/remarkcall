@@ -5,6 +5,7 @@ function initNavContext(){
     var contextBar = $($("#navbar-context").children()[0]);
     var lastItem = $(contextBar.children()[contextBar.children().length-1]);
     var h3s = $(".note-editable").find("h3");
+    var count =0;
     h3s.each(function(key,elem){
         var itemText = $(elem).text();
         var itemTextArray = itemText.split(".");
@@ -21,7 +22,7 @@ function initNavContext(){
             itemHref = "#"+itemHref;
             lastItem.before($("<li role='presentation'><a href="+itemHref+">"+itemText+"</a></li>"));
         }
+        count++
     });
-
-
+    $("#navbar-context").css("top",(window.innerHeight-(count+2)*lastItem.height())/2,"px");
 }
