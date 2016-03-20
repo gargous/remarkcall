@@ -5,10 +5,10 @@ module.exports = function(){
     return new SocketController();
 }
 var SocketController = function(){
-}
-SocketController.prototype.initConnection = function(nsp){
     this.allOnlineList = new remarkcall.SocketList();
     this.allOutlineList = new remarkcall.SocketList();
+}
+SocketController.prototype.initConnection = function(nsp){
     this.nsp = nsp;
 }
 SocketController.prototype.handleConnection = function(handleSocketEnter,handleSocketQuit){

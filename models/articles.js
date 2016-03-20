@@ -15,51 +15,34 @@ var Articles = function(){
 Articles.prototype.init = function(callback){
     var fileUtil = require(path.resolve("utils","files"));
     var self = this;
-    fileUtil.getSubFilesName(this.filePath,function(index,content){
-        try{
-            fs.readFile(content,'utf-8',function(err,data){
-                if(err){
-                    console.log(err);
-                    return;
-                }
-                self.add(index,"Hello_"+index,data,callback);
-            });
-        }catch(e){
-
-        }
+    fileUtil.getSubFilesName(self.filePath,function(err,index,content){
+        if(!err){
+            console.log("add",index,self.filePath);
+            self.add(index,callback);
+        };
     });
 };
-Articles.prototype.add = function(index_,title,content,callback){
-    var dateNow = new Date();
-    var index = "time-"+
-        dateNow.getYear()+"-"+
-        (dateNow.getMonth()+1)+"-"+
-        dateNow.getDate()+"-"+
-        dateNow.getHours()+"-"+
-        dateNow.getMinutes()+"-"+
-        dateNow.getSeconds();
-    if(index_){
-        index = index_;
+Articles.prototype.genIndex = function(index){
+    if(!index){
+        var dateNow = new Date();
+        index = "time-"+ dateNow.getYear()+"-"+
+            (dateNow.getMonth()+1)+"-"+
+            dateNow.getDate()+"-"+
+            dateNow.getHours()+"-"+
+            dateNow.getMinutes()+"-"+
+            dateNow.getSeconds();
     }
-
+    return index;
+}
+Articles.prototype.add = function(index_,callback){
     var self = this;
-    var Article = require("./article");
-    var article = new Article();
-    article.init(index,function(thisArticle){
-        thisArticle.articleInfo.init(index,function(articleInfo){
-            console.log(articleInfo.title);
-            thisArticle.title = articleInfo.title;
-        });
-        if(title!=""){
-            article.title = title;
-        }
-        if(content!=""){
-            article.content = content;
-        }
+    var index = self.genIndex(index_);
+    var article = new (require("./article"))();
+    article.init(index,function(err){
         self.articles[index] = article;
         self.socketAction(article);
         self.length++;
-        callback(article);
+        if(typeof callback == "function")callback(article);
     });
 };
 Articles.prototype.remove = function(index){

@@ -5,19 +5,19 @@ module.exports = function(){
     return new SocketController();
 }
 var SocketController = function(){
+    this.onlineList = new remarkcall.SocketList();
+    this.outlineList = new remarkcall.SocketList();
+    this.chatMsgList = [];
+    this.chatMsgNow = "";
 }
 
 SocketController.prototype.initConnection = function(nsp,article,allOnlineList,allOutlineList){
-    this.onlineList = new remarkcall.SocketList();
-    this.outlineList = new remarkcall.SocketList();
     this.allOnlineList = allOnlineList;
     this.allOutlineList = allOutlineList;
     this.nsp = nsp;
     this.article = article;
-
-    this.chatMsgList = [];
-    this.chatMsgNow = "";
     this.oldDate = new Date();
+    //console.log("connection",this)
 }
 
 SocketController.prototype.handleConnection = function(handleSocketEnter,handleSocketQuit){
@@ -90,11 +90,8 @@ SocketController.prototype.handleConnection = function(handleSocketEnter,handleS
             }else{
                 self.article.setEditable(false);
             }
-            self.article.updateTitle("",msg.title,function(){
-                self.article.articleInfo.title = msg.title;
-                console.log(self.article.articleInfo.title);
-                self.article.articleInfo.save(self.timeStampForSavingRemarks);
-            });
+            self.article.updateTitle(msg.title);
+            self.article.articleInfo.save(self.timeStampForSavingRemarks);
             socket.broadcast.emit("getEditInfo", msg);
         });
         socket.on("pushChatMsg",function(msg){

@@ -10,6 +10,7 @@ var articleInfo;
 $(document).on("ready",function(){
     var articleInfoHTML = $("#articleInfo").html();
     articleInfo = JSON.parse(articleInfoHTML);
+    console.log("info",articleInfo);
     init();
     handleSocket();
     handleEditor($("#summernote"));

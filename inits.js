@@ -50,15 +50,15 @@ Initializer.prototype.initRoutes = function(){
     self.app.use(bodyParser.urlencoded({extended:true}));
     self.app.use(multer({ dest: self.multerPath}));
 
-    fileUtil.getSubFilesName(self.routesPath, function(controller,pathname){
-        try{
+    fileUtil.getSubFilesName(self.routesPath, function(err,controller,pathname){
+        if(err){
+            console.err(err);
+        }else{
             if(controller==="all"){
                 self.app.use("/",require(pathname));
             }else {
                 self.app.use("/" + controller, require(pathname));
             }
-        }catch(e){
-            console.log(e);
         }
     });
 };
@@ -104,9 +104,6 @@ Initializer.prototype.initModels = function(){
 Initializer.prototype.initSocketIO = function(http){
     var io = require("socket.io")(http);
     var ioIndex = require(path.resolve("controllers","sockets","index"))();
-    var ioArticle = require(path.resolve("controllers","sockets","article"))();
-
-    var self = this;
 
     function handleSocketEnter(online,outline,username,socket){
         online.add(username,socket);
@@ -124,8 +121,11 @@ Initializer.prototype.initSocketIO = function(http){
     ioIndex.handleConnection(handleSocketEnter,handleSocketQuit);
 
     remarkcall.articles.setSocketAction(function(article){
+        var ioArticle = require(path.resolve("controllers","sockets","article"))();
         var nsp = io.of(article.nsp);
+        console.log("setAnctiob",article.nsp,article.title);
         ioArticle.initConnection(nsp,article,ioIndex.getSocketList(true),ioIndex.getSocketList(false));
         ioArticle.handleConnection(handleSocketEnter,handleSocketQuit);
     });
+    remarkcall.articles.init();
 };

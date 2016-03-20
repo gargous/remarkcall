@@ -1,8 +1,7 @@
 /**
  * Created by qs on 2016/1/23.
  */
-var express = require('express');
-var router = express.Router();
+var router = require("express").Router();
 function genArticleInfo(req){
     var articleInfo = {};
     articleInfo.author = req.session.author;
@@ -49,6 +48,7 @@ function handleArticle(req,res,index,articleInfo){
     var article = remarkcall.articles.get(index);
     articleInfo.index = article.index;
     articleInfo.editable = article.isAbleToEdit();
+    //console.log("info",articleInfo);
     res.render("article",{
         article:article,
         articleInfo:articleInfo,

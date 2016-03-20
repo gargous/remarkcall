@@ -1,8 +1,7 @@
 /**
  * Created by qs on 2016/1/22.
  */
-var express = require('express');
-var router = express.Router();
+var router = require("express").Router();
 
 router.get("/", function(req,res){
     //var session = req.session;
@@ -13,7 +12,7 @@ router.get("/", function(req,res){
     mainInfo.articleCount = articles.summary();
     res.render("index",{
         articleInfo:mainInfo,
-        rootPath:remarkcall.ROOT_PATH
+        //rootPath:remarkcall.ROOT_PATH
     });
 });
 router.get("/cookies", function(req,res){

@@ -19,33 +19,29 @@ ArticleInfo.prototype.init= function(index,callback){
     self.filePath = path.resolve("storage","articleInfo",self.index+".json");
     fs.readFile(self.filePath,'utf-8',function(err,data){
         if(err){
-            console.log(err);
-            self.createDate = new Date();
-            self.visitCount = 0;
-            self.remarks = [];
-            self.editable = false;
+            console.err(err);
+            self.update(true,{});
+            callback(err);
             return;
         }
         var articleInfo = JSON.parse(data);
-        self.title = articleInfo["title"];
-        self.createDate = articleInfo["createDate"];
-        self.visitCount = articleInfo["visitCount"];
-        self.remarks = articleInfo["remarks"];
-        self.editable = articleInfo["editable"];
-        if(!self.createDate){
-            self.createDate = new Date();
-        }
-        if(!self.visitCount){
-            self.visitCount = 0;
-        }
-        if(!self.remarks){
-            self.remarks = [];
-        }
-        console.log(self);
-        if(self.title){
-            callback(self);
-        }
+        self.update(false,articleInfo);
+        callback(null);
     });
+};
+ArticleInfo.prototype.update = function(isFirst,opts){
+    if(!isFirst){
+        for(var key in this){
+            var value = opts[key];
+            if(value){
+                this[key] = value;
+            }
+        }
+    }
+    this.createDate = this.createDate || new Date();
+    this.visitCount = this.visitCount || 0;
+    this.remarks = this.remarks || [];
+    this.editable = this.editable || false ;
 };
 ArticleInfo.prototype.append = function(index,reviewer,title,remark,callback){
     if(index<this.remarks.length){
@@ -118,10 +114,9 @@ ArticleInfo.prototype.save = function(timeStamp){
     clearTimeout(saveTimer);
     var self = this;
     saveTimer = setTimeout(function(){
-        console.log(self);
         fs.writeFile(self.filePath,JSON.stringify(self),{encoding:"utf-8"},function (err) {
             if (err) {
-                console.log(err);
+                console.err(err);
                 return;
             }
             console.log('ArticleInfo were saved!');

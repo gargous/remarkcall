@@ -1,8 +1,7 @@
 /**
  * Created by qs on 2016/1/22.
  */
-var express = require('express');
-var router = express.Router();
+var router = require("express").Router();
 router.get("/", function(req,res){
     if (req.session.sign) {//检查用户是否已经登录
         res.redirect("/index");

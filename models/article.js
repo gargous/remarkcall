@@ -19,42 +19,25 @@ var Article = function(){
 Article.prototype.init = function(index,callback){
     var self = this;
     self.index = index;
-    self.title = "Hello_"+index;
     self.nsp = "/article"+index;
-    self.content = "Hello_"+index;
     self.fileName = path.join(self.filePath,self.index+".md");
-    callback(self);
-};
-Article.prototype.updateTitle = function(){
-    var self = this;
-    var callback;
-    var data = self.content;
-    if(arguments.length>0){
-        callback = arguments[arguments.length-1];
-    }
-    if(arguments.length>1){
-        data = arguments[0];
-    }
-    if(arguments.length>2){
-        data = arguments[0];
-        var title = arguments[1];
-        self.title = title;
-        self.articleInfo.title = title;
-        console.log("title",self.articleInfo.title);
-        return;
-    }
-    var datalines = data.substr(0,100).replace(/<[^>]+>/g,",");
-    datalines = datalines.split(",");
-    for(var i = 0;i<datalines.length;i++){
-        var title = datalines[i].trim();
-        if(title!=""&&title!="\n"&&title!="\t"){
-            self.title = title;
-            if(callback){
-                callback(title);
+    self.articleInfo.init(index,function(err){
+        self.title = err ? "new Article "+index:self.articleInfo.title;
+        fs.readFile(self.fileName,'utf-8',function(err,data){
+            if(err){
+                console.err(err);
+                self.content = "Hello_"+index;
+                callback(err);
+                return;
             }
-            break;
-        }
-    }
+            self.content = data;
+            callback(null);
+        });
+    });
+};
+Article.prototype.updateTitle = function(title){
+    this.title = title;
+    this.articleInfo.title = title;
 };
 Article.prototype.setEditable = function(editable){
     this.editable = editable;
@@ -76,7 +59,7 @@ Article.prototype.save = function(timeStamp){
     saveTimer = setTimeout(function(){
         fs.writeFile(self.fileName,self.content,{encoding:"utf-8"},function (err) {
             if (err) {
-                console.log(err);
+                console.err(err);
                 return;
             }
             console.log('It\'s saved!');
