@@ -20,7 +20,7 @@ $(document).on("ready",function(){
 function init(){
     differentOfArticle = new diffDOM();
     oldArticleHTML = $("#summernote").html();
-    socket = io.connect(getSocketAddress()+"/article"+articleInfo.index);
+    socket = getSocketConnection(articleInfo.isAuthor,"/article"+articleInfo.index);
     if(!articleInfo.isAuthor){
         console.log(articleInfo.editable);
         initSummernote(articleInfo.editable);

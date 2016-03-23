@@ -7,7 +7,7 @@
 
 }
 .chat-bar-wrapper{
-    position: absolute;
+    position: fixed;
     top: 0em;
     right: 13%
 }

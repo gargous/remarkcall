@@ -2,13 +2,21 @@
  * Created by qs on 2016/1/22.
  */
 var router = require("express").Router();
-
+function genArticleInfo(req){
+    var articleInfo = {};
+    articleInfo.author = req.session.author;
+    articleInfo.visitor = req.session.name;
+    if(req.session.name==req.session.author){
+        articleInfo.isAuthor = true;
+    }else{
+        articleInfo.isAuthor = false;
+    }
+    return articleInfo;
+}
 router.get("/", function(req,res){
     //var session = req.session;
     var articles = remarkcall.articles;
-    var mainInfo = {};
-    mainInfo.author = req.session.author;
-    mainInfo.visitor = req.session.name;
+    var mainInfo = genArticleInfo(req);
     mainInfo.articleCount = articles.summary();
     res.render("index",{
         articleInfo:mainInfo,

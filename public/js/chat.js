@@ -24,6 +24,7 @@ $(document).on("ready",function(){
             ['style', ['fontsize','bold','color', 'italic', 'underline', 'clear']],
             ['font', ['strikethrough', 'superscript', 'subscript']]
         ];
+        summerNote.summernote('destroy');
         summerNote.summernote({
             dialogsFade: true,
             airMode:true,
@@ -45,7 +46,7 @@ $(document).on("ready",function(){
                 console.log(dateNow-dateOld);
                 var detaDate = dateNow-dateOld;
                 dateOld = dateNow;
-                if(detaDate<800){
+                if(detaDate<2000){
                     return;
                 }
             }
@@ -55,7 +56,7 @@ $(document).on("ready",function(){
 
     });
 
-    $("#chat-bar").on("hidden.bs.popover",function(){
+    $("#chat-bar").on("hide.bs.popover",function(){
         var chatSummit = $("#chat-summit");
         var summerNote = $("#chat-note");
         chatSummit.off("click");

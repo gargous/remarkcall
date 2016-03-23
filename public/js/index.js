@@ -3,7 +3,8 @@
  */
 var socket;
 $(document).on("ready",function(){
-    socket = io.connect(getSocketAddress());
+    var articleInfo = JSON.parse($("#articleInfo").html());
+    socket = getSocketConnection(articleInfo.isAuthor,"");
     socket.on("getAllOnlineCount",function(msg){
         console.log(msg);
         $("#online").text(msg.count);
